@@ -1,0 +1,48 @@
+{
+  "name": "Distribution",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Al-Jazary/dashboard.git",
+  "author": "HABIBKAGHAS <habibkaghas@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": " nodemon server/index.js",
+    "serverDev": "title POSDistribution && nodemon server/index.js",
+    "startWithPM2": "tsc --project tsconfig.json &&  pm2 start dist/server.js -w --name 'POS-Distribution'",
+    "start": "title PaymentAPI && node server/index.js",
+    "db:createMigration": "npx sequelize migration:create --name testMigration",
+    "db:migrateDev:migrate": "npx sequelize db:migrate --config \"migrations/config/config.json\"  --env  Clones && npx sequelize db:migrate --config \"migrations/config/config.json\"  --env  development && npx sequelize db:migrate --config \"migrations/config/config.json\"  --env restaurantDevelopment",
+    "db:migrateDevV2:migrate": "npx sequelize db:migrate --config \"migrations/config/config.json\"  --env  developmentV2",
+    "db:migrateDevDistribution:migrate": "npx sequelize db:migrate --config \"migrations/config/config.json\"  --env  developmentDistibution",
+    "db:migrateProd:migrate": "npx sequelize db:migrate --config 'migrations/config/config.json'  --env Dummy_POS && npx sequelize db:migrate --config 'migrations/config/config.json'  --env smarthousePOS && npx sequelize db:migrate --config 'migrations/config/config.json'  --env K1POS && npx sequelize db:migrate --config 'migrations/config/config.json'  --env CharazatChawShin",
+    "db:migrateMain:migrate": "npx sequelize db:migrate --config 'migrations/config/config.json'  --env MainChanges",
+    "db:migrateDev:undo": "npx sequelize db:migrate:undo --config 'migrations/config/config.json'  --env development",
+    "db:migrateDevV2:undo": "npx sequelize db:migrate:undo --config 'migrations/config/config.json'  --env developmentV2",
+    "db:migrateProd:undo": "npx sequelize db:migrate:undo --config 'migrations/config/config.json'  --env CharazatChawShin"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1106.0",
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "mssql": "^8.0.2",
+    "multer": "^1.4.4",
+    "nodemon": "^2.0.15",
+    "reflect-metadata": "^0.1.13",
+    "sequelize": "^6.18.0",
+    "sequelize-auto": "^0.8.8",
+    "sequelize-typescript": "^2.1.3",
+    "socket.io": "^4.4.0",
+    "tedious": "^14.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "@types/validator": "^13.7.2",
+    "sequelize-cli": "^6.4.1",
+    "typescript": "^4.7.2"
+  }
+}

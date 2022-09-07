@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "target": "es6", // or a more recent ecmascript version
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "Node",
+    "module": "commonjs",
+    "resolveJsonModule": true
+  },
+  "include": ["./*/.ts", "./db/*.json", "exceptions/AuthenticationTokenMissingException.ts.ts"],
+  "exclude": ["node_modules"]
+}
