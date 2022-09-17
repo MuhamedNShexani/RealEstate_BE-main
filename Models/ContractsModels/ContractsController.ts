@@ -347,13 +347,15 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
 
 
         }).catch((err) => {
+          console.log(err);
+          
           if (err.index != undefined)
             response.status(400).send({ message: "error in forign key " + err.index + " || should be exist ." });
           else {
             if (err.name == "SequelizeUniqueConstraintError") {
               response.status(400).send({ message: " [ContractsProperty] is unique   " });
             } else
-              response.status(400).send({ message: err || "There is some Error in creating User" });
+              response.status(400).send({ message: err.name || "There is some Error in creating User" });
 
           }
         }
