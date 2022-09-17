@@ -26,7 +26,7 @@ class BranchesController extends BaseController {
   public intializeRoutes() {
     this.router.get(this.get, authMiddleware, async (req, res, next) => {
       try {
-                    this.getBranchesBySeries(req, res, next)
+        this.getBranchesBySeries(req, res, next)
 
         // Permission.findOne({
         //   where:{
@@ -41,7 +41,7 @@ class BranchesController extends BaseController {
         //   else{
         //     res.send({message:"You dont have permission to do that"})
         //   }
-          
+
         // })
 
       } catch (error) {
@@ -71,7 +71,7 @@ class BranchesController extends BaseController {
         //   else{
         //     res.send({message:"You dont have permission to do that"})
         //   }
-          
+
         // })
 
       } catch (error) {
@@ -88,7 +88,7 @@ class BranchesController extends BaseController {
     this.router.put(this.Update, authMiddleware, validationMiddleware(CreateBranches),
       async (req, res, next) => {
         try {
-                        this.UpdateBranches(req, res, next)
+          this.UpdateBranches(req, res, next)
 
           // Permission.findOne({
           //   where:{
@@ -96,7 +96,7 @@ class BranchesController extends BaseController {
           //     RoleSeries:req.user.permissions
           //   }
           // }).then((data)=>{
-  
+
           //   if(data?.Write){            
           //     this.UpdateBranches(req, res, next)
           //   }
@@ -105,7 +105,6 @@ class BranchesController extends BaseController {
           //   }
           // })
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -119,9 +118,9 @@ class BranchesController extends BaseController {
       this.create,
       authMiddleware,
       validationMiddleware(CreateBranches),
-     async (req, res, next) => {
+      async (req, res, next) => {
         try {
-                        this.createBranches(req, res, next)
+          this.createBranches(req, res, next)
 
           // console.log(req.user.permissions);
           // Permission.findOne({
@@ -130,7 +129,7 @@ class BranchesController extends BaseController {
           //     RoleSeries:req.user.permissions
           //   }
           // }).then((data)=>{
-  
+
           //   if(data?.Create){            
           //     this.createBranches(req, res, next)
           //   }
@@ -139,14 +138,12 @@ class BranchesController extends BaseController {
           //   }
           // })
 
-  
+
         } catch (error) {
-          console.log(error);
-          
           next(new HttpException(error.originalError.status || 400, error));
         }
       },
-      
+
     );
 
     this.router.delete(this.delete, authMiddleware, async (req, res, next) => {
@@ -339,7 +336,7 @@ class BranchesController extends BaseController {
     let lastSeries;
 
     console.log("hello");
-    
+
     // const newBranches: TypeBranches = {
     //   Series: "Bra-" + lastSeries,
     //   BranchName: request.body.BranchName,
@@ -428,10 +425,19 @@ class BranchesController extends BaseController {
           });
         }
       }).catch((err: any) => {
+        if(err.name=="SequelizeForeignKeyConstraintError"){
+          response.status(400).send({
+         message:
+          "Sorry You can't delete this because its reference to another page "
+       })
+       }
+       else {
         response.status(400).send({
           message:
             err.name || "Some error occurred while deleting Branches."
         })
+
+      }
       })
 
 

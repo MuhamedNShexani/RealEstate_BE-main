@@ -2,6 +2,7 @@ require("dotenv").config();
 import * as express from "express";
 
 import { Sequelize } from "sequelize";
+import Attachment from "../Models/attachment/Attachment.model";
 import Perms from "../Models/PERM/Per.model";
 import Users from "../Models/UsersModels/Users.model";
 
@@ -74,7 +75,8 @@ async function SignMiddlware(
       // This must be done before associations are made
       let models = [     
         Users,
-        Perms
+        Perms,
+        Attachment
       ];
       
       models.forEach((model) => model.initialize(sequelize));

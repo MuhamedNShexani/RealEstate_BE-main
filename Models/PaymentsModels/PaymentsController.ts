@@ -59,7 +59,6 @@ class PaymentsController extends BaseController {
           this.UpdatePayments(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -78,7 +77,6 @@ class PaymentsController extends BaseController {
           this.createPayments(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -325,7 +323,6 @@ class PaymentsController extends BaseController {
     next();
   };
 
-
   deletePayments = async (
     request: express.Request,
     response: express.Response,
@@ -361,11 +358,18 @@ class PaymentsController extends BaseController {
             message: `Cannot delete Payments with Series=${PaymentsReq.series}. Maybe Payments was not found!`
           });
         }
-      }).catch((err: any) => {
+      }).catch((err: any) => { 
+        if(err.name=="SequelizeForeignKeyConstraintError"){
+        response.status(400).send({
+       message:
+        "Sorry You can't delete this because its reference to another page "
+     })
+     }
+     else {
         response.status(400).send({
           message:
             err.name || "Some error occurred while deleting Payments."
-        })
+        })}
       })
       this.io
         .to(request.UserSeries)
@@ -386,5 +390,15 @@ class PaymentsController extends BaseController {
     next();
   };
 }
+
+// currency exchange
+
+// dinner:148000
+// doller:100
+// lira:255
+//
+
+
+
 
 export default PaymentsController;

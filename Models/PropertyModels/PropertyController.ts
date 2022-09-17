@@ -62,7 +62,6 @@ class PropertyController extends BaseController {
           this.UpdateProperty(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -81,7 +80,6 @@ class PropertyController extends BaseController {
           this.createProperty(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -130,7 +128,8 @@ class PropertyController extends BaseController {
       next(new NotFoundException(series, "Property"));
       return;
     }
-
+    PropertyResult.dataValues.Furnitures=PropertyResult.dataValues.Furnitures==null?[] :JSON.parse(PropertyResult.dataValues.Furnitures)
+    PropertyResult.dataValues.Attributes=PropertyResult.dataValues.Attributes==null?[]:JSON.parse(PropertyResult.dataValues.Attributes)    
     console.log("User (action)  : get by Series [Property]  By : {" + request.userName + "} , Date:" + Date());
 
     response.send(PropertyResult);
@@ -172,17 +171,28 @@ class PropertyController extends BaseController {
         // attributes: ["Series", "Territory", "Purpose", "Location", "Attributes", "ISFurnished", "Furnitures", "Party", "RequestedAmt", "Currency"],
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),
-      }).then(data => {
+      }).then((data:any) => {
         if (data.length == 0) {
           console.log({ message: " there is no data ... in tbl Property" });
           response.send(data);
         }
-        else {
+        else {let i:any
           console.log("User (action)  : GetAll [Property]  By : {" + request.userName + "} , Date:" + Date());
+          for( i in data){            
+            if(data[i].dataValues.Furnitures==null){
+              data[i].dataValues.Furnitures=[]
+            }
+            if(data[i].dataValues.Attributes==null){
+              data[i].dataValues.Attributes=[]
+            }
 
+          }
+          
           response.send(data);
         }
       }).catch((err: any) => {
+        console.log(err);
+        
         response.status(400).send({
           message:
             err.name || "Some error occurred while Finding All Property."
@@ -221,6 +231,9 @@ class PropertyController extends BaseController {
       result = await Property.update(
         {
           ...PropertyUpdate,
+          Attributes: JSON.stringify(request.body.Attributes),
+          Furnitures: JSON.stringify(request.body.Furnitures),
+          ExtraPayment: JSON.stringify(request.body.ExtraPayment),
           updatedBy: request.userName,
           updatedAt: new Date(),
         },
@@ -288,9 +301,9 @@ class PropertyController extends BaseController {
 
       result = await Property.create({
         ...PropertyCreate,
-        Attributes:JSON.stringify(request.body.Attributes),
-        Furnitures:JSON.stringify(request.body.Furnitures),
-        ExtraPayment:JSON.stringify(request.body.ExtraPayment),
+        Attributes: JSON.stringify(request.body.Attributes),
+        Furnitures: JSON.stringify(request.body.Furnitures),
+        ExtraPayment: JSON.stringify(request.body.ExtraPayment),
         Series: "PROP-" + lastSeries,
         createdBy: request.userName,
         createdAt: new Date(),
@@ -304,6 +317,7 @@ class PropertyController extends BaseController {
           .emit("Add", { doctype: "Property", data: data });
 
       }).catch((err: any) => {
+        
         if (err.index != undefined)
           response.status(400).send({ message: "error in forign key " + err.index + " || should be exist ." });
         else {
@@ -360,10 +374,17 @@ class PropertyController extends BaseController {
           });
         }
       }).catch((err: any) => {
+        if(err.name=="SequelizeForeignKeyConstraintError"){
+          response.status(400).send({
+         message:
+          "Sorry You can't delete this because its reference to another page "
+       })
+       }
+       else {
         response.status(400).send({
           message:
             err.name || "Some error occurred while deleting Property."
-        })
+        })}
       })
       next();
 

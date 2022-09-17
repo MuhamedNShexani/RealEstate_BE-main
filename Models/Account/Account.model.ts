@@ -1,5 +1,5 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
-
+//hello workd
 class Account extends Model {
   
   public Series!: string;

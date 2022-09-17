@@ -207,7 +207,7 @@ class DocTypePermissionsController extends BaseController {
         {
           where: {
             Series: series,
-            DocTypeID:docTypeID
+            DocTypeID: docTypeID
           },
         }
       ).then(data => {
@@ -248,7 +248,7 @@ class DocTypePermissionsController extends BaseController {
     const DocTypePermissionsCreate: CreateDocTypePermissions = request.body;
     const { DocTypePermissions } = request.db.models;
     let lastSeries;
-console.log(request.body);
+    console.log(request.body);
 
     await DocTypePermissions.findOne({
       order: [["id", "DESC"]],

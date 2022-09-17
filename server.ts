@@ -20,6 +20,7 @@ import DocTypes from "./Models/DocTypes/DocTypes.controllers";
 import PermsController from "./Models/PERM/Perms.controller";
 import DocTypePermissionsController from "./Models/DocTypePermissions/DocTypePermissions.Controller";
 import AttachmentController from "./Models/attachment/AttachmentAPI";
+import CurrencyExchangeController from "./Models/CurrencyExchangeModels/CurrencyExchangeController";
 
 const app = new App(
     [new TerritoryController(),
@@ -33,6 +34,7 @@ const app = new App(
     new PermissionController(),
     new PropertyAttrController(),
     new PropertyController(),
+    new CurrencyExchangeController(),
     new PropertyTypeController(),
     new PurposeController(),
     new RolesController(),

@@ -18,7 +18,7 @@ class DocTypes extends Model {
         this.init(
             {
 
-                series:{
+                Series:{
                     type: DataTypes.STRING,
                     unique: true,
                 },

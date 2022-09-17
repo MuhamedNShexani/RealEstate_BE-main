@@ -60,7 +60,6 @@ class ContractTemplatesController extends BaseController {
           this.UpdateContractTemplates(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -79,7 +78,6 @@ class ContractTemplatesController extends BaseController {
           this.CreateContractTemplates(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -160,7 +158,7 @@ class ContractTemplatesController extends BaseController {
         }
       }).catch((err: any) => {
         console.log(err);
-        
+
         response.status(400).send({
           message:
             err.name || "Some error occurred while findAll ContractsTemplates."
@@ -215,7 +213,7 @@ class ContractTemplatesController extends BaseController {
           response.status(201).send("updated");
           this.io
             .to(request.UserSeries)
-            .emit("Update", { doctype: "ContractTemplates", data: ContractTemplatesUpdate });
+            .emit("Update", { doctype: "ContractTemplate", data: ContractTemplatesUpdate });
 
 
         }
@@ -266,6 +264,7 @@ class ContractTemplatesController extends BaseController {
 
     let result;
     try {
+console.log(request.userName);
 
       result = await ContractTemplates.create({
         ...ContractTemplatesCreate,
@@ -279,12 +278,10 @@ class ContractTemplatesController extends BaseController {
         response.status(201).send(data);
         this.io
           .to(request.UserSeries)
-          .emit("Add", { doctype: "ContractTemplates", data: data });
+          .emit("Add", { doctype: "ContractTemplate", data: data });
 
 
       }).catch((err) => {
-        console.log(err);
-        
         if (err.name == "SequelizeUniqueConstraintError") {
           response.status(400).send({ message: "TemplateName has already used . please try another name." });
         } else
@@ -342,11 +339,7 @@ class ContractTemplatesController extends BaseController {
       })
       this.io
         .to(request.UserSeries)
-        .emit("Delete", { doctype: "ContractTemplates", data: ContractTemplatesReq });
-
-      // this.io
-      // .emit("Delete", { doctype: "ContractTemplates", data: ContractTemplatesReq });
-
+        .emit("Delete", { doctype: "ContractTemplate", data: ContractTemplatesReq });
       next();
 
     } catch (error) {

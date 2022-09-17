@@ -1,23 +1,24 @@
 import * as express from "express";
-import validationMiddleware from "../../middleware/validation.middleware";
 import BaseController from "../BaseController";
 import HttpException from "../../exceptions/HttpExceptions";
-import NotFoundException from "../../exceptions/NotFoundException";
 import AddingRowException from "../../exceptions/errorInCreatingTable";
 import authMiddleware from "../../middleware/auth.middleware";
-//import permissionsMiddleware from "../../middleware/permissions.middleware";
+import SignMiddlware from "../../middleware/Sign";
+import NotFoundException from "../../exceptions/NotFoundException";
+
 
 class AttachmentController extends BaseController {
-  public get = "/Attachment/:series";
+  public get = "/Attachment/:refSeries";
+  public Download = "/Attachment/download/:id";
+  public view = "/Attachment/view/:id";
   public read = "/Attachment/";
-  public delete = "/Attachment/:series";
-  public Update = "/Attachment/:series";
+  public delete = "/Attachment/:id/:refSeries";
   public create = "/Attachment/";
   public io;
 
   public router = express.Router();
   public Attachment: any; //new Attachment();
-  public DOCTYPE = ["DT-2"]; //keep current Docktype at the first always
+  // public DOCTYPE = ["DT-"]; //keep current Docktype at the first always
 
   constructor() {
     super();
@@ -25,12 +26,11 @@ class AttachmentController extends BaseController {
   }
 
   public intializeRoutes() {
-    this.router.get(this.get, authMiddleware, async (req, res, next) => {
+    this.router.get(this.get, SignMiddlware, async (req, res, next) => {
       try {
         this.getAttachmentBySeries(req, res, next)
 
       } catch (error) {
-        console.log(error);
         next(
           new HttpException(
             error.originalError.status || 400,
@@ -44,7 +44,6 @@ class AttachmentController extends BaseController {
         this.getAllAttachment(req, res, next)
 
       } catch (error) {
-        console.log(error);
         next(
           new HttpException(
             error.originalError.status || 400,
@@ -53,22 +52,7 @@ class AttachmentController extends BaseController {
         );
       }
     });
-    this.router.put(this.Update, authMiddleware,
-      async (req, res, next) => {
-        try {
-          this.UpdateAttachment(req, res, next)
-
-        } catch (error) {
-          console.log(error);
-          next(
-            new HttpException(
-              error.originalError.status || 400,
-              error.originalError.message
-            )
-          );
-        }
-      }
-    );
+    
     this.router.post(
       this.create,
       authMiddleware,
@@ -77,12 +61,48 @@ class AttachmentController extends BaseController {
           this.createAttachment(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
               error.originalError.message
             )
+
+          );
+        }
+      }
+    );
+    this.router.get(
+      this.Download,
+      SignMiddlware,
+      async (req, res, next) => {
+        try {
+          this.DownloadAttachment(req, res, next)
+
+        } catch (error) {
+          next(
+            new HttpException(
+              error.originalError.status || 400,
+              error.originalError.message
+            )
+
+          );
+        }
+      }
+    );
+    this.router.get(
+      this.view,
+      SignMiddlware,
+      async (req, res, next) => {
+        try {
+          this.ViewAttachment(req, res, next)
+
+        } catch (error) {
+          next(
+            new HttpException(
+              error.originalError.status || 400,
+              error.originalError.message
+            )
+
           );
         }
       }
@@ -109,23 +129,9 @@ class AttachmentController extends BaseController {
     response: express.Response,
     next: express.NextFunction
   ) => {
-    let { series } = request.params;
-
-    console.log("User (action)  : get By Series [Attachment] By : {" + request.userName + "} , Date:" + Date());
-
-    response.send();
-  };
-
-  getAllAttachment = async (
-    request: express.Request,
-    response: express.Response,
-    next: express.NextFunction
-  ) => {
-    const { page, pageSize, filters } = request.query;
     const { Attachment } = request.db.models;
     const { google } = require('googleapis');
-    const path = require('path');
-    const fs = require('fs');
+
 
     const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
     const CLIENT_SECRET = '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';
@@ -146,55 +152,69 @@ class AttachmentController extends BaseController {
       auth: oauth2Client,
     });
     try {
-      const fileId = '1cMlVTGfYbt0dIZeJ-i0m3nruFUTAkBz6';
-      await drive.permissions.create({
-        fileId: fileId,
-        requestBody: {
-          role: 'reader',
-          type: 'anyone',
-        },
-      });
-  
-      // /* 
-      // webViewLink: View the file in browser
-      // webContentLink: Direct download link 
-      // */
-      const result = await drive.files.get({
-        fileId: fileId,
-        fields: 'webViewLink, webContentLink',
-      });
 
-      // console.log(result.data);
-      response.send(result.data);
-        } catch (error) {
-      console.log(error)
+
+      let AttachmentResult = await Attachment.findAll({
+        where: { refSeries: request.params.refSeries }
+      })
+
+
+      if (!AttachmentResult) {
+        next(new NotFoundException(request.params.refSeries, "Attachment refSeries"));
+        return;
+      }
+      console.log("User (action)  : Get by Series [Attachment]  By : {" + request.userName + "} , Date:" + Date());
+
+      response.send(AttachmentResult);
+
+    } catch (error) {
       response.send(error)
     }
 
 
+
   };
 
-  UpdateAttachment = async (
+  getAllAttachment = async (
     request: express.Request,
     response: express.Response,
     next: express.NextFunction
   ) => {
-    request.body.token = null;
+    const { Attachment } = request.db.models;
+    const { google } = require('googleapis');
 
-    let series = request.params.series;
-    let result;
-    try {
+    const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
+      const CLIENT_SECRET = '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';
+      const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-    }
-    catch (error) {
-      next(new AddingRowException(error, "Attachment"));
-
-      return;
-    }
-
-    next();
-  };
+      const REFRESH_TOKEN = '1//04_bQFY-mL6lPCgYIARAAGAQSNgF-L9IrJa8A7Y5ONsQZxV_sGAxmINoP03jQq_AjqQGX54akqNG8-maP1C6T7RH1LjzueVGajg'
   
+    const oauth2Client = new google.auth.OAuth2(
+      CLIENT_ID,
+      CLIENT_SECRET,
+      REDIRECT_URI
+    );
+
+    oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+
+
+    const drive = google.drive({
+      version: 'v3',
+      auth: oauth2Client,
+    });
+    try {
+      Attachment.findAll({}).then(data => {
+        console.log("User (action)  : getAll [Attachment]  By : {" + request.userName + "} , Date:" + Date());
+        response.status(200).send([])
+      })
+
+
+    } catch (error) {
+      response.send(error)
+    }
+  };
+
   createAttachment = async (
     request: express.Request,
     response: express.Response,
@@ -202,18 +222,20 @@ class AttachmentController extends BaseController {
   ) => {
 
     try {
+
       const { Attachment } = request.db.models;
-      let Readable = require('stream').Readable; 
+      let Readable = require('stream').Readable;
       const { image } = request.files;
+      const { refDoctype, refSeries } = request.query;
 
       if (!image) return response.sendStatus(400);
+else{
 
-
-      function bufferToStream(buffer) { 
+      function bufferToStream(buffer) {
         var stream = new Readable();
         stream.push(buffer);
         stream.push(null);
-      
+
         return stream;
       }
 
@@ -223,7 +245,138 @@ class AttachmentController extends BaseController {
       const CLIENT_SECRET = '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';
       const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-      const REFRESH_TOKEN = '1//047s2WtMT-di2CgYIARAAGAQSNgF-L9IrQtAGC25n1ZaA6ZYb5hXIDrtCnWi_8aGlwOPyGHsYLTw2k_bG72RLqy2BY7LTrdM_Ng';
+      const REFRESH_TOKEN = '1//04_bQFY-mL6lPCgYIARAAGAQSNgF-L9IrJa8A7Y5ONsQZxV_sGAxmINoP03jQq_AjqQGX54akqNG8-maP1C6T7RH1LjzueVGajg'
+      const oauth2Client = new google.auth.OAuth2(
+        CLIENT_ID,
+        CLIENT_SECRET,
+        REDIRECT_URI
+      );
+
+      oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+      const drive = google.drive({
+        version: 'v3',
+        auth: oauth2Client,
+      });
+
+
+
+      // mimetype=
+      // image/jpeg
+      // application/vnd.oasis.opendocument.spreadsheet
+      // image/png
+      // application/vnd.ms-powerpoint
+      // application/vnd.ms-excel
+
+      //   const MIME_TYPES = {
+      //     'imgs/jpeg': 'jpeg',
+      //     'image/png': 'png',
+      //     'application/vnd.oasis.opendocument.spreadsheet':'application/vnd.oasis.opendocument.spreadsheet',
+      //     'application/vnd.ms-powerpoint':'application/vnd.ms-powerpoint',
+      //     'application/vnd.ms-excel':'application/vnd.ms-excel'
+      // }
+
+      if (request.files.image.length == undefined) {
+
+        const media = {
+          mimeType: request.files.image.mimetype,
+          body: bufferToStream(request.files.image.data)
+        };
+        const file = await drive.files.create({
+          resource: {
+            name: request.files.image.name,
+            'parents': ["19V08sFwBEy9epXg1I5yh9k9T-Ht3tDs4"],
+          },
+          media: media,
+          fields: 'id'
+        });
+
+        const result = await drive.files.get({
+          fileId: file.data.id,
+          fields: 'webViewLink, webContentLink',
+        });
+        // FileLink.push({link:'https://drive.google.com/file/d/'+file.data.id+'/view'});
+
+        const Attach = await Attachment.create(
+          {
+            id: file.data.id,
+            name: request.files.image.name,
+            Link: result.data.webViewLink,
+            refDoctype: refDoctype,
+            bufferData: request.files.image.data,
+            // MimeType:request.files.image[i].mimetype,
+            refSeries: refSeries,
+            createdBy: request.userName,
+            createdAt: new Date(),
+          })
+
+
+        console.log("User (action)  : create new [Attachment]  By : {" + request.userName + "} , Date:" + Date());
+
+        response.status(200).send(Attach)
+      }
+      else {
+
+        for (var i in request.files.image) {
+          const media = {
+            mimeType: request.files.image[i].mimetype,
+            body: bufferToStream(request.files.image[i].data)
+          };
+          const file = await drive.files.create({
+            resource: {
+              name: request.files.image[i].name,
+              'parents': ["19V08sFwBEy9epXg1I5yh9k9T-Ht3tDs4"],
+            },
+            media: media,
+            fields: 'id'
+          });
+
+          const result = await drive.files.get({
+            fileId: file.data.id,
+            fields: 'webViewLink, webContentLink',
+          });
+
+          const Attach = await Attachment.create(
+            {
+              id: file.data.id,
+              name: request.files.image[i].name,
+              Link: result.data.webViewLink,
+              refDoctype: refDoctype,
+              // MimeType:request.files.image[i].mimetype,
+              refSeries: refSeries,
+              createdBy: request.userName,
+              createdAt: new Date(),
+            })
+          console.log("User (action)  : create new [Attachment]  By : {" + request.userName + "} , Date:" + Date());
+
+          response.status(200).send(Attach)
+        }
+      }
+    }
+    } catch (error) {
+      next(new AddingRowException(error, "Attachment"));
+      return;
+    }
+
+  };
+  DownloadAttachment = async (
+    request: express.Request,
+    response: express.Response,
+    next: express.NextFunction
+  ) => {
+
+    try {
+
+      const { Attachment } = request.db.models;
+
+      const { google } = require('googleapis');
+
+     
+    const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
+    const CLIENT_SECRET = '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';
+    const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+
+    const REFRESH_TOKEN = '1//04_bQFY-mL6lPCgYIARAAGAQSNgF-L9IrJa8A7Y5ONsQZxV_sGAxmINoP03jQq_AjqQGX54akqNG8-maP1C6T7RH1LjzueVGajg'
 
       const oauth2Client = new google.auth.OAuth2(
         CLIENT_ID,
@@ -238,62 +391,93 @@ class AttachmentController extends BaseController {
         auth: oauth2Client,
       });
 
-      /* 
-      filepath which needs to be uploaded
-      Note: Assumes example.jpg file is in root directory, 
-      though this can be any filePath
-      */
-    //   const MIME_TYPES = {
-    //     'imgs/jpg': 'jpg',
-    //     'imgs/jpeg': 'jpeg',
-    //     'imgs/png': 'png'
-    // }
-    
-  
+
+      const fileId = request.params.id;
+      await drive.permissions.create({
+        fileId: fileId,
+        requestBody: {
+          role: 'reader',
+          type: 'anyone',
+        },
+      });
+
+      const result = await drive.files.get({
+        fileId: fileId,
+        fields: 'webViewLink, webContentLink',
+      });
+      console.log("User (action)  : Download [Attachment]  By : {} , Date:"+Date());
       
-        try {
-          let FileLink:any=[]
+      response.status(200).send(result.data.webContentLink)
+      // drive.files.get(
+      //   {
+      //     fileId: fileId,
+      //     alt: "media"
+      //   },
+      //   { responseType: "arraybuffer" },
+      //   function (err, { data }) {  
+      //             console.log(data);
 
-          for( var i in request.files.image){
-          const media = {
-            mimeType: request.files.image[i].mimetype,
-            body: bufferToStream(request.files.image[i].data)
-          };
-        
-        
-            const file = await drive.files.create({
-              resource: {
-                name:request.files.image[i].name ,
-                'parents': ["19V08sFwBEy9epXg1I5yh9k9T-Ht3tDs4"],
-              },
-              media: media,
-              fields: 'id'
-            });
-            FileLink.push({link:'https://drive.google.com/file/d/'+file.data.id+'/view'});
-         await   Attachment.create(
-              {
-                id:file.data.id,
-                name:request.files.image[i].name,
-                Link:'https://drive.google.com/file/d/'+file.data.id+'/view',
-                Size:request.files.image[i].size,
-                MimeType:request.files.image[i].mimetype,
-                createdBy: request.userName,
-                createdAt: new Date(),
-                    })
-          }           
-          //  console.log('File lINL:', FileLink);  
-          
-          
+      //     response.send(JSON.stringify(data))
 
-                 response.status(200).send({})
+      //   }
+      // );
 
-
-       
-        } catch (error) {
-          console.log(error);
-        }
-      
     } catch (error) {
+      
+      next(new AddingRowException(error, "Attachment"));
+      return;
+    }
+
+  };
+  ViewAttachment = async (
+    request: express.Request,
+    response: express.Response,
+    next: express.NextFunction
+  ) => {
+
+    try {
+
+      const { Attachment } = request.db.models;
+
+      const { google } = require('googleapis');
+
+      const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
+      const CLIENT_SECRET = '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';
+      const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+
+      const REFRESH_TOKEN = '1//04_bQFY-mL6lPCgYIARAAGAQSNgF-L9IrJa8A7Y5ONsQZxV_sGAxmINoP03jQq_AjqQGX54akqNG8-maP1C6T7RH1LjzueVGajg'
+  
+      const oauth2Client = new google.auth.OAuth2(
+        CLIENT_ID,
+        CLIENT_SECRET,
+        REDIRECT_URI
+      );
+
+      oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+      const drive = google.drive({
+        version: 'v3',
+        auth: oauth2Client,
+      });
+
+
+      const fileId = request.params.id;
+      await drive.permissions.create({
+        fileId: fileId,
+        requestBody: {
+          role: 'reader',
+          type: 'anyone',
+        },
+      });
+
+      const result = await drive.files.get({
+        fileId: fileId,
+        fields: 'webViewLink, webContentLink',
+      });
+      
+      response.status(200).send(result.data.webViewLink)
+
+    } catch (error) {      
       next(new AddingRowException(error, "Attachment"));
       return;
     }
@@ -307,36 +491,42 @@ class AttachmentController extends BaseController {
     next: express.NextFunction
   ) => {
     // const AttachmentReq = request.params;
-    // const { Attachment } = request.db.models;
+    const { Attachment } = request.db.models;
     // let result;
     const { google } = require('googleapis');
-      const path = require('path');
-      const fs = require('fs');
+    let fileid = request.params.id
+    let refSeries = request.params.refSeries
 
-      const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
+
+
+    const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
       const CLIENT_SECRET = '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';
       const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-      const REFRESH_TOKEN = '1//047s2WtMT-di2CgYIARAAGAQSNgF-L9IrQtAGC25n1ZaA6ZYb5hXIDrtCnWi_8aGlwOPyGHsYLTw2k_bG72RLqy2BY7LTrdM_Ng';
+      const REFRESH_TOKEN = '1//04_bQFY-mL6lPCgYIARAAGAQSNgF-L9IrJa8A7Y5ONsQZxV_sGAxmINoP03jQq_AjqQGX54akqNG8-maP1C6T7RH1LjzueVGajg'
+  
+    const oauth2Client = new google.auth.OAuth2(
+      CLIENT_ID,
+      CLIENT_SECRET,
+      REDIRECT_URI
+    );
 
-      const oauth2Client = new google.auth.OAuth2(
-        CLIENT_ID,
-        CLIENT_SECRET,
-        REDIRECT_URI
-      );
+    oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-      oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-
-      const drive = google.drive({
-        version: 'v3',
-        auth: oauth2Client,
-      });
+    const drive = google.drive({
+      version: 'v3',
+      auth: oauth2Client,
+    });
     try {
-      const response = await drive.files.delete({
-        fileId: 'YOUR FILE ID',
+      const result = await drive.files.delete({
+        fileId: fileid,
       });
-      console.log(response.data, response.status);
+      await Attachment.destroy({ where: { id: fileid } })
+      Attachment.findAll({ where: { refSeries: request.params.refSeries } }).then(data => {
+        console.log("User (action)  : delete one  [Attachment]  By : {" + request.userName + "} , Date:" + Date());
 
+        response.status(200).send(data)
+      })
     } catch (error) {
       response.status(400).send({
         message:

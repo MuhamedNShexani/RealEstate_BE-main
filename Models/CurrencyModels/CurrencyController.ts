@@ -60,7 +60,6 @@ class CurrencyController extends BaseController {
           this.UpdateCurrency(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -79,7 +78,6 @@ class CurrencyController extends BaseController {
           this.createCurrency(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -332,10 +330,17 @@ class CurrencyController extends BaseController {
         }
 
       }).catch((err: any) => {
+        if(err.name=="SequelizeForeignKeyConstraintError"){
+          response.status(400).send({
+         message:
+          "Sorry You can't delete this because its reference to another page "
+       })
+       }
+       else {
         response.status(400).send({
           message:
             err.name || "Some error occurred while deleting Currency."
-        })
+        })}
       })
 
     } catch (error) {

@@ -59,7 +59,6 @@ class PermissionController extends BaseController {
           this.UpdatePermission(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -78,7 +77,6 @@ class PermissionController extends BaseController {
           this.createPermission(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -149,12 +147,12 @@ class PermissionController extends BaseController {
       }).then(data => {
         if (data.length == 0) {
           console.log({ message: " there is no data ... in tbl Permission" });
-          
+
           response.send(data);
         }
         else {
           console.log("User (action)  : getAll [Permission]  By : {" + request.userName + "} , Date:" + Date());
-          console.log(data);
+          // console.log(data);
 
           response.status(200).send(data);
         }

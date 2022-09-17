@@ -22,9 +22,9 @@ class CreateContracts {
   @IsOptional() @IsNotEmpty() @IsString() AdvanceCurrency: string
   @IsOptional() @IsNotEmpty() @IsString() InsuranceCurrency: string
   @IsOptional() @IsNotEmpty() @IsBoolean() IsFurnished: boolean
-  @IsOptional() @IsNotEmpty() @IsString() Furnitures: string
+  // @IsOptional() @IsNotEmpty() @IsString() Furnitures: string
   @IsOptional() @IsNotEmpty() @IsString() Remarks: string
-  @IsOptional() @IsNotEmpty() @IsString() ExtraPayment: string
+  // @IsOptional() @IsNotEmpty() @IsString() ExtraPayment: string
   @IsOptional() @IsNotEmpty() @IsString() Lawyer: string
 
 }

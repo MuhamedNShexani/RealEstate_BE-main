@@ -20,19 +20,19 @@ class PrintKeys extends BaseController {
 
   public intializeRoutes() {
     this.router.get(this.get, authMiddleware, async (req, res, next) => {
-        try {
-          this.getPrintkeysById(req, res, next)
-  
-        } catch (error) {
-          console.log(error);
-          next(
-            new HttpException(
-              error.originalError.status || 400,
-              error.originalError.message
-            )
-          );
-        }
-      });
+      try {
+        this.getPrintkeysById(req, res, next)
+
+      } catch (error) {
+        console.log(error);
+        next(
+          new HttpException(
+            error.originalError.status || 400,
+            error.originalError.message
+          )
+        );
+      }
+    });
     this.router.get(this.read, authMiddleware, async (req, res, next) => {
       try {
         this.getAllPrintKeys(req, res, next)
@@ -69,12 +69,12 @@ class PrintKeys extends BaseController {
       })
     });
 
-    if (PrintKeysResult.length==0) {
+    if (PrintKeysResult.length == 0) {
       next(new NotFoundException(DocType, "PrintKeys"));
       return;
     }
 
-console.log("User (action)  : get By DocType [PrintKeys] By : {"+request.userName+"}    Date:"+Date());
+    console.log("User (action)  : get By DocType [PrintKeys] By : {" + request.userName + "}    Date:" + Date());
 
     response.send(PrintKeysResult);
   };
@@ -88,34 +88,34 @@ console.log("User (action)  : get By DocType [PrintKeys] By : {"+request.userNam
     const { PrintKeys } = request.db.models;
 
     try {
-await PrintKeys.findAll({
-    where: { ...filters },
-    offset: parseInt(page) * parseInt(pageSize),
-    limit: parseInt(pageSize),
-  }).then(data => {
-    if (data.length == 0) {     
-      console.log({ message: " there is no data ... in tbl PrintKeys" });
-      response.send(data);
-    }
-    else {
-      console.log("User (action)  : getAll [PrintKeys] By : {"+request.userName+"}    Date:"+Date() );
-      data = data.map((x) => {
-        return {
-          Doctype: x.Doctype,
-          PrintKeys: [x.PrintKey, x.Arabic, x.Turkish, x.Kurdish].filter(
-            (x) => !!x
-          ),
-          Replacement: x.ReplacementObject,
-        };
-      });
-      return response.send(data);
-    }
-  })
+      await PrintKeys.findAll({
+        where: { ...filters },
+        offset: parseInt(page) * parseInt(pageSize),
+        limit: parseInt(pageSize),
+      }).then(data => {
+        if (data.length == 0) {
+          console.log({ message: " there is no data ... in tbl PrintKeys" });
+          response.send(data);
+        }
+        else {
+          console.log("User (action)  : getAll [PrintKeys] By : {" + request.userName + "}    Date:" + Date());
+          data = data.map((x) => {
+            return {
+              Doctype: x.Doctype,
+              PrintKeys: [x.PrintKey, x.Arabic, x.Turkish, x.Kurdish].filter(
+                (x) => !!x
+              ),
+              Replacement: x.ReplacementObject,
+            };
+          });
+          return response.send(data);
+        }
+      })
 
-} catch (error) {
-  console.log(error)
-  response.send(error)
-}
+    } catch (error) {
+      console.log(error)
+      response.send(error)
+    }
 
   }
 

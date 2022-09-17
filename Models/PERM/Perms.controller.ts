@@ -59,7 +59,6 @@ class PermsController extends BaseController {
           this.UpdatePerms(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -78,7 +77,6 @@ class PermsController extends BaseController {
           this.createPerms(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -112,9 +110,10 @@ class PermsController extends BaseController {
   ) => {
     let { series } = request.params;
     const { Perms } = request.db.models;
+    console.log(series);
 
     let PermsResult = await Perms.findOne({
-      where: { RoleSeries: request.user.permissions },
+      where: { series: series },
       // attributes: ["Series", "RoleSeries", "DocTypeID", "Read", "Write", "Create", "Delete"],
     }).catch((err: any) => {
       response.status(400).send({
@@ -124,11 +123,13 @@ class PermsController extends BaseController {
     });
 
     if (!PermsResult) {
+      console.log("error");
+
       next(new NotFoundException(series, "Perms"));
       return;
     }
     console.log("User (action)  : get BY Series [Perms]  By : {" + request.userName + "} , Date:" + Date());
-
+    // PermsResult.dataValues.JsonData=PermsResult.dataValues.JsonData==null?[]:JSON.parse(PermsResult.dataValues.JsonData)
     response.send(PermsResult);
   };
 
@@ -157,7 +158,7 @@ class PermsController extends BaseController {
         }
       }).catch((err: any) => {
         console.log(err);
-        
+
         response.status(400).send({
           message:
             err.name || "Some error occurred while find All Perms."
@@ -189,7 +190,7 @@ class PermsController extends BaseController {
       let oldPerms = await Perms.findOne({
 
         where: {
-          Series: series,
+          series: series,
         },
       }).catch((err: any) => {
         response.status(400).send({
@@ -197,10 +198,10 @@ class PermsController extends BaseController {
             err.name || "Some error occurred while creating Perms."
         })
       });
-  
+
       result = await Perms.update(
         {
-          JsonData:JSON.stringify(request.body.JsonData),
+          JsonData: JSON.stringify(request.body.JsonData),
           updatedBy: request.userName,
           updatedAt: new Date(),
         },
@@ -216,11 +217,13 @@ class PermsController extends BaseController {
           response.status(201).send("updated");
           this.io
             .to(request.UserSeries)
-            .emit("Update", { doctype: "Perms", data: PermsUpdate });
+            .emit("Update", { doctype: "Permission", data: PermsUpdate });
 
 
         }
       }).catch((err) => {
+        console.log(err);
+
         if (err.name == "SequelizeForeignKeyConstraintError") {
           response.status(400).send({ message: "error in forign key (RoleSeries) || should be exist ." });
         }
@@ -231,6 +234,8 @@ class PermsController extends BaseController {
 
     }
     catch (error) {
+      console.log(error);
+
       next(new AddingRowException(error, "Perms"));
 
       return;
@@ -247,7 +252,7 @@ class PermsController extends BaseController {
     // const PermsCreate: CreatePerms = request.body;
     const { Perms } = request.db.models;
     let lastSeries;
-console.log(request.body);
+    console.log(request.body);
 
     await Perms.findOne({
       order: [["id", "DESC"]],
@@ -269,8 +274,8 @@ console.log(request.body);
     try {
       await Perms.create({
         Series: "PER-" + lastSeries,
-        RoleSeries:request.body.RoleSeries,
-        JsonData:JSON.stringify(request.body.JsonData),
+        RoleSeries: request.body.RoleSeries,
+        JsonData: JSON.stringify(request.body.JsonData),
         createdBy: request.userName,
         createdAt: new Date(),
       }).then(data => {
@@ -290,7 +295,7 @@ console.log(request.body);
           response.status(400).send({ message: err.name || "There is some Error in creating Permission" });
         }
       })
-    
+
 
     } catch (error) {
       next(new AddingRowException(error, "DocTypePermissions"));
@@ -343,7 +348,7 @@ console.log(request.body);
 
       this.io
         .to(request.UserSeries)
-        .emit("Delete", { doctype: "Perms", data: PermsReq });
+        .emit("Delete", { doctype: "Permission", data: PermsReq });
 
       next();
 

@@ -1,7 +1,6 @@
 import * as express from "express";
-import CreateContractType from "./CreateContractType.dto";
+import CreateCurrencyExchange from "./CreateCurrencyExchange.dto";
 import validationMiddleware from "../../middleware/validation.middleware";
-
 import BaseController from "../BaseController";
 import HttpException from "../../exceptions/HttpExceptions";
 import NotFoundException from "../../exceptions/NotFoundException";
@@ -9,17 +8,17 @@ import AddingRowException from "../../exceptions/errorInCreatingTable";
 import authMiddleware from "../../middleware/auth.middleware";
 //import permissionsMiddleware from "../../middleware/permissions.middleware";
 
-class ContractTypeController extends BaseController {
-  public get = "/ContractType/:series";
-  public read = "/ContractType/";
-  public delete = "/ContractType/:series";
-  public Update = "/ContractType/:series";
-  public create = "/ContractType/";
+class CurrencyExchangeController extends BaseController {
+  public get = "/CurrencyExchange/:series";
+  public read = "/CurrencyExchange/";
+  public delete = "/CurrencyExchange/:series";
+  public Update = "/CurrencyExchange/:series";
+  public create = "/CurrencyExchange/";
   public io;
 
   public router = express.Router();
-  public ContractType: any; //new ContractType();
-  public DOCTYPE = ["DT-4"]; //keep current Docktype at the first always
+  public CurrencyExchange: any; //new CurrencyExchange();
+  public DOCTYPE = ["DT-15"]; //keep current Docktype at the first always
 
   constructor() {
     super();
@@ -29,7 +28,7 @@ class ContractTypeController extends BaseController {
   public intializeRoutes() {
     this.router.get(this.get, authMiddleware, async (req, res, next) => {
       try {
-        this.getContractTypeBySeries(req, res, next)
+        this.getCurrencyExchangeBySeries(req, res, next)
 
       } catch (error) {
         console.log(error);
@@ -43,7 +42,7 @@ class ContractTypeController extends BaseController {
     });
     this.router.get(this.read, authMiddleware, async (req, res, next) => {
       try {
-        this.getAllContractType(req, res, next)
+        this.getAllCurrencyExchange(req, res, next)
 
       } catch (error) {
         console.log(error);
@@ -55,10 +54,10 @@ class ContractTypeController extends BaseController {
         );
       }
     });
-    this.router.put(this.Update, authMiddleware, validationMiddleware(CreateContractType),
+    this.router.put(this.Update, authMiddleware, validationMiddleware(CreateCurrencyExchange),
       async (req, res, next) => {
         try {
-          this.UpdateContractType(req, res, next)
+          this.UpdateCurrencyExchange(req, res, next)
 
         } catch (error) {
           next(
@@ -73,10 +72,10 @@ class ContractTypeController extends BaseController {
     this.router.post(
       this.create,
       authMiddleware,
-      validationMiddleware(CreateContractType),
+      validationMiddleware(CreateCurrencyExchange),
       async (req, res, next) => {
         try {
-          this.createContractType(req, res, next)
+          this.createCurrencyExchange(req, res, next)
 
         } catch (error) {
           next(
@@ -91,7 +90,7 @@ class ContractTypeController extends BaseController {
 
     this.router.delete(this.delete, authMiddleware, async (req, res, next) => {
       try {
-        this.deleteContractType(req, res, next)
+        this.deleteCurrencyExchange(req, res, next)
 
       } catch (error) {
         console.log(error);
@@ -105,100 +104,96 @@ class ContractTypeController extends BaseController {
     });
   }
 
-  private getContractTypeBySeries = async (
+  private getCurrencyExchangeBySeries = async (
     request: express.Request,
     response: express.Response,
     next: express.NextFunction
   ) => {
     let { series } = request.params;
-    const { ContractType } = request.db.models;
+    const { CurrencyExchange } = request.db.models;
 
-    let ContractTypeResult = await ContractType.findOne({
+    let CurrencyExchangeResult = await CurrencyExchange.findOne({
       where: { Series: series },
-      // attributes: ["Series", "ContractType"],
     }).catch((err: any) => {
       response.status(400).send({
         message:
-          err.name || "Some error occurred while find one ContractType."
+          err.name || "Some error occurred while find one CurrencyExchange."
       })
     });
 
-    if (!ContractTypeResult) {
-      next(new NotFoundException(series, "ContractType"));
+    if (!CurrencyExchangeResult) {
+      next(new NotFoundException(series, "CurrencyExchange"));
       return;
     }
-    console.log("User (action)  : get By Series [ContractType] By : {" + request.userName + "} , Date: " + Date());
+    console.log("User (action)  : get By Series [CurrencyExchange] By : {" + request.userName + "} , Date: " + Date());
 
-    response.send(ContractTypeResult);
+
+    response.send(CurrencyExchangeResult);
   };
 
-  getAllContractType = async (
+  getAllCurrencyExchange = async (
     request: express.Request,
     response: express.Response,
     next: express.NextFunction
   ) => {
     const { page, pageSize, filters } = request.query;
-    const { ContractType } = request.db.models;
+    const { CurrencyExchange } = request.db.models;
 
     try {
-      const res = await ContractType.findAll({
+      const res = await CurrencyExchange.findAll({
         where: { ...filters },
-        // attributes: ["Series", "ContractType"],
+        // attributes: ["Series", "CurrencyExchangeName", "Symbol", "Format", "Enabled", "Default"],
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),
       }).then(data => {
         if (data.length == 0) {
-          console.log({ message: " there is no data ... in tbl ContractType" });
+          console.log({ message: " there is no data ... in tbl CurrencyExchange" });
           response.send(data);
         }
         else {
-          console.log("User (action)  : getAll [ContractType]  By : {" + request.userName + "} , Date:" + Date());
+          console.log("User (action)  : getAll [CurrencyExchange] By : {" + request.userName + "} , Date: " + Date());
 
           response.send(data);
         }
       }).catch((err: any) => {
         response.status(400).send({
           message:
-            err.name || "Some error occurred while finding All ContractType."
+            err.name || "Some error occurred while Finding ALl CurrencyExchange."
         })
       });
-
     } catch (error) {
       console.log(error)
       response.send(error)
-
     }
-
-
 
   };
 
-  UpdateContractType = async (
+  UpdateCurrencyExchange = async (
     request: express.Request,
     response: express.Response,
     next: express.NextFunction
   ) => {
     request.body.token = null;
-    const ContractTypeUpdate: CreateContractType = request.body;
-    const { ContractType } = request.db.models;
+    const CurrencyExchangeUpdate: CreateCurrencyExchange = request.body;
+    const { CurrencyExchange } = request.db.models;
 
     let series = request.params.series;
     let result;
     try {
-      let oldContractType = await ContractType.findOne({
+      let oldCurrencyExchange = await CurrencyExchange.findOne({
         where: {
           Series: series,
         },
       }).catch((err: any) => {
         response.status(400).send({
           message:
-            err.name || "Some error occurred while creating ContractType."
+            err.name || "Some error occurred while creating CurrencyExchange."
         })
       });
 
-      result = await ContractType.update(
+      result = await CurrencyExchange.update(
         {
-          ...ContractTypeUpdate,
+          ...CurrencyExchangeUpdate,
           updatedBy: request.userName,
           updatedAt: new Date(),
         },
@@ -209,156 +204,147 @@ class ContractTypeController extends BaseController {
         }
       ).then(data => {
         if (data[0] == 1) {
-          console.log("User (action)  : Update [ContractType] By : {" + request.userName + "} , Date:" + Date());
+          console.log("User (action)  : Update [CurrencyExchange] By : {" + request.userName + "} , Date: " + Date());
 
           response.status(201).send("updated");
           this.io
             .to(request.UserSeries)
-            .emit("Update", { doctype: "ContractType", data: ContractTypeUpdate });
+            .emit("Update", { doctype: "CurrencyExchange", data: CurrencyExchangeUpdate });
+
+
         }
         else {
-          response.status(404).send(series + "   Not found");
+          response.status(404).send("Series " + series + " Not found")
         }
       }).catch((err) => {
         if (err.name == "SequelizeUniqueConstraintError") {
-          response.status(400).send({ message: " (ContractType) name has already used . please try another ." });
+          response.status(400).send({ message: " (CurrencyExchangeName)  has already used . please try another name ." });
         } else
-          response.status(400).send({ message: err.name || "There is some Error in creating ContractType" });
+          response.status(400).send({ message: err.name || "There is some Error in creating CurrencyExchange" });
       })
 
 
     }
     catch (error) {
-      next(new AddingRowException(error, "ContractType"));
+      next(new AddingRowException(error, "CurrencyExchange"));
 
       return;
     }
 
     next();
   };
-  createContractType = async (
+  createCurrencyExchange = async (
     request: express.Request,
     response: express.Response,
     next: express.NextFunction
   ) => {
     request.body.token = null;
-    const ContractTypeCreate: CreateContractType = request.body;
-    const { ContractType } = request.db.models;
+    const CurrencyExchangeCreate: CreateCurrencyExchange = request.body;
+    const { CurrencyExchange } = request.db.models;
     let lastSeries;
 
-    await ContractType.findOne({
+    await CurrencyExchange.findOne({
+
       order: [["id", "DESC"]],
     }).
       then((data: any) => {
         if (!data) {
           lastSeries = 1;
         } else {
-          lastSeries = +data.dataValues.Series.substring(6) + 1;
+          lastSeries = +data.dataValues.Series.substring(7) + 1;
         }
       }).catch((err: any) => {
         response.status(400).send({
           message:
-            err.name || "Some error occurred while retrieving ContractType."
+            err.name || "Some error occurred while retrieving CurrencyExchange."
         })
       });
 
     let result;
     try {
 
-      result = await ContractType.create({
-        ...ContractTypeCreate,
-        Series: "CTYPE-" + lastSeries,
+      await CurrencyExchange.create({
+        ...CurrencyExchangeCreate,
+        Series: "CUR_EX-" + lastSeries,
         createdBy: request.userName,
         createdAt: new Date(),
       }).then(data => {
-
-        ContractType.Series = data.dataValues.Series;
-        console.log("User (action)  : Create New [ContractType] By : {" + request.userName + "} , Date: " + Date());
+        CurrencyExchange.Series = data.dataValues.Series;
+        console.log("User (action)  : Create New [CurrencyExchange] By : {" + request.userName + "} , Date: " + Date());
 
         response.status(201).send(data);
         this.io
           .to(request.UserSeries)
-          .emit("Add", { doctype: "ContractType", data: data });
-
+          .emit("Add", { doctype: "CurrencyExchange", data: data });
 
 
       }).catch((err) => {
         if (err.name == "SequelizeUniqueConstraintError") {
-          response.status(400).send({ message: " (ContractType) name has already used . please try another ." });
+          response.status(400).send({ message: " (CurrencyExchangeName)  has already used . please try another name ." });
         } else
-          response.status(400).send({ message: err.name || "There is some Error in creating ContractType" });
+          response.status(400).send({ message: err.name || "There is some Error in creating CurrencyExchange" });
       })
 
-
     } catch (error) {
-      next(new AddingRowException(error, "ContractType"));
+      next(new AddingRowException(error, "CurrencyExchange"));
       return;
     }
 
     next();
   };
 
-
-  deleteContractType = async (
+  deleteCurrencyExchange = async (
     request: express.Request,
     response: express.Response,
     next: express.NextFunction
   ) => {
-    const ContractTypeReq = request.params;
-    const { ContractType } = request.db.models;
+    const CurrencyExchangeReq = request.params;
+    const { CurrencyExchange } = request.db.models;
     let result;
     try {
-      // const oldContractType = await ContractType.findOne({
-      //   where: { Series: ContractTypeReq.series },
-      //   attributes: ["Series", "ContractType"],
-      // }).catch((err: any) => {
-      //   response.status(400).send({
-      //     message:
-      //       err.name || "Some error occurred while finding old ContractType."
-      //   })
+      // const oldCurrencyExchange = await CurrencyExchange.findOne({
+      //   where: { Series: CurrencyExchangeReq.series },
+      //   attributes: ["Series", "CurrencyExchangeName", "Symbol", "Format", "Enabled", "Default"],
       // });
 
-      await ContractType.destroy({
+      await CurrencyExchange.destroy({
         where: {
-          Series: ContractTypeReq.series, //this will be your id that you want to delete
+          Series: CurrencyExchangeReq.series, //this will be your id that you want to delete
         },
       }).then((num: number) => {
         if (num == 1) {
-          console.log("User (action)  : Delete one [ContractType] By : {" + request.userName + "} , Date: " + Date());
+          console.log("User (action)  : Delete One [CurrencyExchange] By : {" + request.userName + "} , Date: " + Date());
 
-          return response.status(200).send({
-            message: "ContractType was deleted successfully!"
+          return response.send({
+            message: "CurrencyExchange was deleted successfully!"
           });
         } else {
-          return response.status(503).send({
-            message: `Cannot delete ContractType with Series=${ContractTypeReq.series}. Maybe ContractType was not found!`
+          this.io
+            .to(request.UserSeries)
+            .emit("Delete", { doctype: "CurrencyExchange", data: CurrencyExchangeReq });
+
+          return response.send({
+            message: `Cannot delete CurrencyExchange with Series=${CurrencyExchangeReq.series}. Maybe CurrencyExchange was not found!`
           });
         }
 
       }).catch((err: any) => {
-        response.status(404).send({
+        response.status(400).send({
           message:
-            err.name || "Some error occurred while deleting ContractType."
+            err.name || "Some error occurred while deleting CurrencyExchange."
         })
       })
-      this.io
-        .to(request.UserSeries)
-        .emit("Delete", { doctype: "ContractType", data: ContractTypeReq });
-      next();
-
 
     } catch (error) {
       response.status(400).send({
         message:
-          error.message || "Some error occurred while Deleting the ContractType."
+          error.message || "Some error occurred while Deleting the CurrencyExchange."
       });
 
     }
-
-
 
     next();
   };
 }
 
-export default ContractTypeController;
+export default CurrencyExchangeController;

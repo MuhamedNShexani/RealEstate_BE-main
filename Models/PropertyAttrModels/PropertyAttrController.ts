@@ -59,7 +59,6 @@ class PropertyAttrController extends BaseController {
           this.UpdatePropertyAttr(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -78,7 +77,6 @@ class PropertyAttrController extends BaseController {
           this.createPropertyAttr(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -325,10 +323,17 @@ class PropertyAttrController extends BaseController {
           });
         }
       }).catch((err: any) => {
+        if(err.name=="SequelizeForeignKeyConstraintError"){
+          response.status(400).send({
+         message:
+          "Sorry You can't delete this because its reference to another page "
+       })
+       }
+       else {
         response.status(400).send({
           message:
             err.name || "Some error occurred while deleting PropertyAttr."
-        })
+        })}
       })
       this.io
         .to(request.UserSeries)

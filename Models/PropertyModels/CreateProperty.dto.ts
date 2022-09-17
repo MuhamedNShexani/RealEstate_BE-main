@@ -5,9 +5,9 @@ class CreateProperty {
   @IsString() Territory: string;
   @IsString() Purpose: string;
   @IsOptional() @IsNotEmpty() @IsString() Location: string;
-  @IsOptional() @IsNotEmpty() @IsString() Attributes: string;
+  // @IsOptional() @IsNotEmpty() @IsString() Attributes: string;
   @IsOptional() @IsNotEmpty() @IsBoolean() IsFurnished: boolean;
-  @IsOptional() @IsNotEmpty() @IsString() Furnitures: string;
+  // @IsOptional() @IsNotEmpty() @IsString() Furnitures: string;
   @IsOptional() @IsNotEmpty() @IsString() Party: string;
   @IsOptional() @IsNotEmpty() @IsNumber() RequestedAmt: number;
   @IsOptional() @IsNotEmpty() @IsString() Currency: string;

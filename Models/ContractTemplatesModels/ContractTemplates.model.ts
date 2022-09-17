@@ -40,6 +40,10 @@ class ContractTemplates extends Model {
         FontSize: DataTypes.STRING,
         FontFamily: DataTypes.STRING,
         TableHeadersColor: DataTypes.STRING,
+       createdAt: DataTypes.DATE,
+       updatedAt:DataTypes.DATE,
+       createdBy: DataTypes.STRING,
+       updatedBy: DataTypes.STRING
       },
       {
         sequelize: sequelize,

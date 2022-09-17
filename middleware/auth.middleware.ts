@@ -26,6 +26,7 @@ import Users from "../Models/UsersModels/Users.model";
 import DocTypes from "../Models/DocTypes/DocTypes.model";
 import Perms from "../Models/PERM/Per.model";
 import Attachment from "../Models/attachment/Attachment.model";
+import CurrencyExchange from "../Models/CurrencyExchangeModels/CurrencyExchange.model";
 
 let dbConfig = {
   HOST: "localhost",
@@ -146,6 +147,7 @@ async function authMiddleware(
 
           let models = [Branches,
             Perms,
+            CurrencyExchange,
             ContractTemplates,
             ContractType,
             Currency,

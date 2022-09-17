@@ -31,7 +31,6 @@ class ContractsController extends BaseController {
         this.getContractsBySeries(req, res, next)
 
       } catch (error) {
-        console.log(error);
         next(
           new HttpException(
             error.originalError.status || 400,
@@ -45,7 +44,6 @@ class ContractsController extends BaseController {
         this.getAllContracts(req, res, next)
 
       } catch (error) {
-        console.log(error);
         next(
           new HttpException(
             error.originalError.status || 400,
@@ -60,7 +58,6 @@ class ContractsController extends BaseController {
           this.UpdateContracts(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -79,7 +76,6 @@ class ContractsController extends BaseController {
           this.createContracts(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -95,7 +91,6 @@ class ContractsController extends BaseController {
         this.deleteContracts(req, res, next)
 
       } catch (error) {
-        console.log(error);
         next(
           new HttpException(
             error.originalError.status || 400,
@@ -130,7 +125,9 @@ class ContractsController extends BaseController {
       return;
     }
     console.log("User (action)  : get By Series [Contracts] By : {" + request.userName + "} , Date:" + Date());
-
+    ContractsResult.dataValues.Furnitures=ContractsResult.dataValues.Furnitures==null?[]:JSON.parse(ContractsResult.dataValues.Furnitures)        
+    ContractsResult.dataValues.ExtraPayment=ContractsResult.dataValues.ExtraPayment==null?[]:JSON.parse(ContractsResult.dataValues.ExtraPayment)    
+    ContractsResult.dataValues.Attributes=ContractsResult.dataValues.Attributes==null?[]:JSON.parse(ContractsResult.dataValues.Attributes)    
     response.send(ContractsResult);
   };
 
@@ -166,7 +163,6 @@ class ContractsController extends BaseController {
         })
       });
     } catch (error) {
-      console.log(error)
       response.send(error)
     }
 
@@ -187,19 +183,8 @@ class ContractsController extends BaseController {
     try {
       if (ContractsUpdate.IsRent == ContractsUpdate.IsSale)
         response.status(400).send({ message: " the property of contract should be for Rent Or for Sale check one of this two value" })
-
-      // let oldContracts = await Contracts.findOne({
-
-      //   where: {
-      //     Series: series,
-      //   },
-      // }).catch((err: any) => {
-      //   response.status(400).send({
-      //     message:
-      //       err.name || "Some error occurred while creating Contracts."
-      //   })
-      // });
-      try {
+      else{
+        try {
         let owner = await Property.findOne({ where: { Series: ContractsUpdate.Property } })
         if (ContractsUpdate.FirstParty == null) {
           ContractsUpdate.FirstParty = owner.dataValues.Party
@@ -212,13 +197,14 @@ class ContractsController extends BaseController {
       } catch (err) {
         response.status(400).send({ message: err.name })
 
-      }
-
+      } 
       result = await Contracts.update(
         {
           ...ContractsUpdate,
-          Attributes:JSON.stringify(request.body.Attributes),
-          Furnitures:JSON.stringify(request.body.Furnitures),
+          
+          ExtraPayment:JSON.stringify(request.body.ExtraPayment),
+          Attributes: JSON.stringify(request.body.Attributes),
+          Furnitures: JSON.stringify(request.body.Furnitures),
           updatedBy: request.userName,
           updatedAt: new Date(),
         },
@@ -227,9 +213,26 @@ class ContractsController extends BaseController {
             Series: series,
           },
         }
-      ).then(data => {
+      ).then(async(data) => {
+
         if (data[0] == 1) {
+          if(ContractsUpdate.IsSale==true){
+            await Property.update(
+              {
+                Party: ContractsUpdate.SecondParty,
+                updatedBy: request.userName,
+                updatedAt: new Date(),
+              },
+              {
+                where: {
+                  Series: ContractsUpdate.Property,
+                },
+              }
+            )
+          }
+          
           response.status(201).send("updated");
+
           console.log("User (action)  : Update [Contracts]  By : {" + request.userName + "} , Date:" + Date());
 
           this.io
@@ -239,12 +242,10 @@ class ContractsController extends BaseController {
         } else {
           response.status(404).send(series + "  Not found");
         }
-      }).catch((err) => {
+      }).catch((err) => {        
         if (err.index != undefined)
           response.status(400).send({ message: "error in forign key " + err.index + " || should be exist ." });
         else {
-          console.log(err);
-
           if (err.name == "SequelizeUniqueConstraintError") {
             response.status(400).send({ message: " [ContractsProperty] is unique || This property has been sold  " });
           } else
@@ -253,7 +254,7 @@ class ContractsController extends BaseController {
         }
       })
 
-
+    }
     }
     catch (error) {
       next(new AddingRowException(error, "Contracts"));
@@ -267,11 +268,12 @@ class ContractsController extends BaseController {
     request: express.Request,
     response: express.Response,
     next: express.NextFunction
-  ) => {
+  ) => {    
     request.body.token = null;
     const ContractsCreate: CreateContracts = request.body;
     const { Contracts, Property } = request.db.models;
     let lastSeries;
+    
     try {
       let owner = await Property.findOne({ where: { Series: ContractsCreate.Property } })
       if (ContractsCreate.FirstParty == null) {
@@ -289,8 +291,7 @@ class ContractsController extends BaseController {
 
     if (ContractsCreate.IsRent == ContractsCreate.IsSale)
       response.status(400).send({ message: " the property of contract should be for Rent Or for Sale check one of this two value" })
-
-    if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
+else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
       response.status(400).send({ message: "[First Party] and [Second party] must be different  " })
     } else {
       await Contracts.findOne({
@@ -310,12 +311,11 @@ class ContractsController extends BaseController {
         });
       let result;
       try {
-console.log(lastSeries);
-
         await Contracts.create({
           ...ContractsCreate,
-          Attribute:JSON.stringify(request.body.Attribute),
-          Furnitures:JSON.stringify(request.body.Furnitures),
+          ExtraPayment:JSON.stringify(request.body.ExtraPayment),
+          Attributes:JSON.stringify(request.body.Attributes),
+          Furnitures: JSON.stringify(request.body.Furnitures),
           Series: "CON-" + lastSeries,
           createdBy: request.userName,
           createdAt: new Date(),
@@ -324,7 +324,8 @@ console.log(lastSeries);
           // console.log(data.dataValues.SecondParty);
 
           console.log("User (action)  : Create new [Contracts] By : {" + request.userName + "} , Date: " + Date());
-          await Property.update(
+          if(data.dataValues.IsSale==true){
+              await Property.update(
             {
               Party: data.dataValues.SecondParty,
               updatedBy: request.userName,
@@ -336,6 +337,8 @@ console.log(lastSeries);
               },
             }
           )
+          }
+        
           response.status(201).send(data)
 
           this.io
@@ -347,8 +350,6 @@ console.log(lastSeries);
           if (err.index != undefined)
             response.status(400).send({ message: "error in forign key " + err.index + " || should be exist ." });
           else {
-            console.log(err);
-
             if (err.name == "SequelizeUniqueConstraintError") {
               response.status(400).send({ message: " [ContractsProperty] is unique   " });
             } else
@@ -365,8 +366,6 @@ console.log(lastSeries);
     }
     next();
   };
-
-
   deleteContracts = async (
     request: express.Request,
     response: express.Response,
@@ -406,11 +405,18 @@ console.log(lastSeries);
           });
         }
       }).catch((err: any) => {
-
+        if(err.name=="SequelizeForeignKeyConstraintError"){
+          response.status(400).send({
+         message:
+          "Sorry You can't delete this because its reference to another page "
+       })
+       }
+       else {
         response.status(400).send({
           message:
             err.name || "Some error occurred while deleting Contracts."
-        })
+        })}
+
       });
 
       next();

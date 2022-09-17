@@ -59,7 +59,6 @@ class PurposeController extends BaseController {
           this.UpdatePurpose(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -78,7 +77,6 @@ class PurposeController extends BaseController {
           this.createPurpose(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -336,10 +334,18 @@ class PurposeController extends BaseController {
           });
         }
       }).catch((err: any) => {
+        if(err.name=="SequelizeForeignKeyConstraintError"){
+          response.status(400).send({
+         message:
+          "Sorry You can't delete this because its reference to another page "
+       })
+       }
+       else {
         response.status(400).send({
           message:
             err.name || "Some error occurred while deleting Purpose."
         })
+      }
       })
       next();
 

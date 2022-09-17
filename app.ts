@@ -2,6 +2,7 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import errorMiddleware from "./middleware/error.middleware";
 const { Server } = require("socket.io");
+import * as Cors from 'cors'
 import * as http from "http";
 
 class App {
@@ -12,6 +13,7 @@ class App {
 
   constructor(controllers, port) {
     this.app = express();
+    this.app.use(Cors())
     this.port = port;
     this.server = http.createServer(this.app);
     this.io = new Server(this.server, {
@@ -20,28 +22,28 @@ class App {
 
     this.io.on("connection", function (socket) {
       console.log("new User Connected");
-      console.log("userId:  "+socket.id);
+      console.log("userId:  " + socket.id);
       socket.on('join', function (room) {
-        console.log("room",room);
-        
+        console.log("room", room);
+
         socket.join(room);
       });
       // socket.on("join", (data) => {
 
       //   console.log("resultData: ",data);
       //   socket.join("Ahmed11");
-     
-      // })  
-       socket.on("Add", (params, callback) => {
-          console.log(params);
-          socket.join(params);
-          // callback({
-          //   status: "ok"
-          // });
-        })
 
-      socket.on("disconnect",(reason)=>{
-        console.log(socket.id+"  "+reason)
+      // })  
+      socket.on("Add", (params, callback) => {
+        console.log(params);
+        socket.join(params);
+        // callback({
+        //   status: "ok"
+        // });
+      })
+
+      socket.on("disconnect", (reason) => {
+        console.log(socket.id + "  " + reason)
       })
     });
 
@@ -74,13 +76,13 @@ class App {
   // });
   private initializeMiddlewares() {
     var fileupload = require("express-fileupload");
-this.app.use(fileupload({
-  limits: {
-      fileSize: 10000000, // Around 10MB
-  },
-  abortOnLimit: true,
-})  
-);
+    this.app.use(fileupload({
+      limits: {
+        fileSize: 10000000, // Around 10MB
+      },
+      abortOnLimit: true,
+    })
+    );
     this.app.use(function (req, res, next) {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
@@ -95,7 +97,7 @@ this.app.use(fileupload({
 
     controllers.forEach((controller) => {
       // this.io.sockets.on('connection', controller.router);
-       controller.io=this.io;
+      controller.io = this.io;
       this.app.use("/", controller.router);
     });
   }

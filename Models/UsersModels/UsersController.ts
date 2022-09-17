@@ -64,7 +64,6 @@ class UsersController extends BaseController {
           this.UpdateUsers(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -83,7 +82,6 @@ class UsersController extends BaseController {
           this.createUsers(req, res, next)
 
         } catch (error) {
-          console.log("Error" + error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -115,7 +113,6 @@ class UsersController extends BaseController {
           this.loginUser(req, res, next)
 
         } catch (error) {
-          console.log(error);
           next(
             new HttpException(
               error.originalError.status || 400,
@@ -145,6 +142,9 @@ class UsersController extends BaseController {
       })
     });
 
+UsersResult.dataValues.Password=null;  
+
+
     if (!Users) {
       next(new NotFoundException(series, "Users"));
       return;
@@ -165,7 +165,7 @@ class UsersController extends BaseController {
     try {
       const res = await Users.findAll({
         where: { ...filters },
-        // attributes: ["Series", "FullName", "UserName", "Language", "RoleId", "FromDate", "ToDate", "Branch", "Disabled","Account"],
+        attributes: ["ID","Series", "FullName", "UserName", "Language", "RoleId", "FromDate", "ToDate", "Branch", "Disabled","DefaultCurrency","createdBy","createdAt","updatedAt","updatedBy"],
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),
       }).then(data => {
@@ -246,7 +246,7 @@ class UsersController extends BaseController {
           } else {
             secret = process.env.ACCESS_TOKEN_SECRET;
           }
-          const accessToken = jwt.sign(user, secret, { expiresIn: "h" })
+          const accessToken = jwt.sign(user, secret, { expiresIn: "100h" })
           console.log("User (action)  : Update [Users] " + Date());
 
           response.send("updated");
@@ -259,6 +259,8 @@ class UsersController extends BaseController {
         }
       }
       ).catch((err) => {
+        console.log(err);
+        
         if (err.name == "SequelizeUniqueConstraintError") {
           if (err.errors[0].message == "UQ__Users__fullname must be unique") {
             response.status(400).send({ message: "(FullName) has already used . please try another name." });
@@ -271,6 +273,8 @@ class UsersController extends BaseController {
 
     }
     catch (error) {
+      console.log(error);
+      
       next(new AddingRowException(error, "Users"));
 
       return;
@@ -324,7 +328,7 @@ class UsersController extends BaseController {
         Users.Series = data.dataValues.Series;
         console.log("User (action)  : Create New [Users] " + Date());
 
-        response.send({ data: data, accessToken: accessToken })
+        response.status(201).send({ data: data, accessToken: accessToken })
         this.io
           .to(request.user.Series)
           .emit("Add", { doctype: "Users", data: data });
@@ -396,10 +400,17 @@ class UsersController extends BaseController {
           });
         }
       }).catch((err: any) => {
+        if(err.name=="SequelizeForeignKeyConstraintError"){
+          response.status(400).send({
+         message:
+          "Sorry You can't delete this because its reference to another page "
+       })
+       }
+       else {
         response.status(400).send({
           message:
             err.name || "Some error occurred while deleting Users."
-        })
+        })}
       })
 
     } catch (error) {
@@ -419,14 +430,16 @@ class UsersController extends BaseController {
   loginUser = async (request: express.Request,
     response: express.Response,
     next: express.NextFunction) => {
-    const { Users ,Perms} = request.db.models;
+    const { Users, Perms } = request.db.models;
     const { UserName, Password } = request.body;
     // 1) Check if email and Password exist
-    if (!UserName || !Password) {
+      try {
+         if (!UserName || !Password) {
       return next(response.end("Please provide email and Password!"));
     }
+    else{
     // 2) Check if user exists && Password is correct
-    try {
+ 
       Users.findOne({
         where: {
           UserName: UserName // user email
@@ -446,10 +459,10 @@ class UsersController extends BaseController {
             } else {
               secret = process.env.ACCESS_TOKEN_SECRET;
             }
-            let user = { UserName: data.dataValues.UserName, Series: data.dataValues.Series , RoleID:data.dataValues.RoleID }
-            const accessToken = jwt.sign(user, secret, { expiresIn: "2h" });
-            console.log(user);
-            
+            let user = { UserName: data.dataValues.UserName,defaultCurrency:data.dataValues.DefaultCurrency, Series: data.dataValues.Series, RoleID: data.dataValues.RoleID }
+            const accessToken = jwt.sign(user, secret, { expiresIn: "72h" });
+            // console.log(user);
+
             let Pusher = require('pusher');
             let pusher = new Pusher({
               appId: "1464760",
@@ -467,57 +480,64 @@ class UsersController extends BaseController {
               where: { RoleSeries: data.dataValues.RoleID },
               // attributes: ["Series", "RoleSeries", "DocTypeID", "Read", "Write", "Create", "Delete"],
             }).catch((err: any) => {
-              console.log(err);
-              
               response.status(400).send({
                 message:
                   err.name || "Some error occurred while find one Perms."
               })
             });
-        
-            PermsResult=JSON.parse(PermsResult.JsonData);
+
+            PermsResult = JSON.parse(PermsResult.JsonData);
             // console.log(PermsResult[0]);
             // response.send(PermsResult.JsonData)
-            let  A:any =[];
-            PermsResult.map((i)=>{
-              if(i.Create ) {
-                A.push(  { action:"create",
-                subject: i.DocTypeID })
+            let A: any = [];
+            PermsResult.map((i) => {
+              if (i.Create) {
+                A.push({
+                  action: "create",
+                  subject: i.DocTypeID
+                })
               }
-               if(i.Read ) {
-                A.push(  { action:"read",
-                subject: i.DocTypeID })
+              if (i.Read) {
+                A.push({
+                  action: "read",
+                  subject: i.DocTypeID
+                })
               }
-              if(i.Delete ) {
-                A.push(  { action:"delete",
-                subject: i.DocTypeID })
+              if (i.Delete) {
+                A.push({
+                  action: "delete",
+                  subject: i.DocTypeID
+                })
               }
-              if(i.Write ) {
-                A.push(  { action:"write",
-                subject: i.DocTypeID })
+              if (i.Write) {
+                A.push({
+                  action: "write",
+                  subject: i.DocTypeID
+                })
               }
-             
-               
-               }
+
+
+            }
 
             )
             A.push({
               action: "read",
               subject: "DASH",
             })
-            response.send({ accessToken: accessToken, userSeries: user.Series ,Permissions:A
-             })
+            response.send({
+              accessToken: accessToken, userSeries: user.Series,defaultCurrency:user.defaultCurrency, Permissions: A
+            })
 
           }
         }
       }).catch((err: any) => {
         console.log(err);
-        
+
         response.status(400).send({
           message:
             err.name || "Some error occurred while login Users."
         })
-      })
+      })}
     } catch (error) {
 
       response.send(error)

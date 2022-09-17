@@ -3,8 +3,10 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 class Contracts extends Model {
 public ContractDate!: Date;
 public FirstParty!: Date;
+
 public SecondParty!: string;
 public Series!: string;
+public ContractType!: string;
 public Property!: string;
 public Attributes!: string;
 public IsSale!: boolean;
@@ -55,7 +57,10 @@ public Lawyer!: string
         FirstParty: {
           type: DataTypes.STRING
         },
-         Attributes: {
+        Attributes: {
+          type: DataTypes.STRING
+        },
+         ContractType: {
           type: DataTypes.STRING
         },
         SecondParty: {

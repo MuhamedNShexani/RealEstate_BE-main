@@ -11,7 +11,7 @@ public FromDate!: Date;
 public ToDate!: Date;
 public  Branch!: string;
 public  Disabled!: boolean;
-public  Account!: string;
+public  DefaultCurrency!: string;
   // Auto-generated
   public id!: number;
   public createdAt!: Date;
@@ -71,6 +71,10 @@ public  Account!: string;
         Disabled: {
           type: DataTypes.BOOLEAN
         },
+        DefaultCurrency: {
+          type: DataTypes.STRING,
+    
+        },
         createdBy: { type: DataTypes.STRING, allowNull: true },
         createdAt: { type: DataTypes.DATE, allowNull: true },
         updatedAt: { type: DataTypes.DATE, allowNull: true },
@@ -82,7 +86,6 @@ public  Account!: string;
             if (user.Password) {
               const salt = await bcrypt.genSaltSync(10, 'a');
               user.Password = bcrypt.hashSync(user.Password, salt);
-              console.log(user.Password)
             }
           },
           beforeUpdate: async (user) => {

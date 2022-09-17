@@ -4,9 +4,8 @@ class Attachment extends Model {
   
   public name!: string;
   public Link!: string;
-  public Size!: number;
-  public MimeType!: string;
-
+  public refSeries!: string;
+  public refDoctype!:string;
   // Auto-generated
   public id!: string;
   public createdAt!: Date;
@@ -29,10 +28,10 @@ class Attachment extends Model {
         Link:{
           type: DataTypes.STRING,
         },
-        Size:DataTypes.STRING,
-
-        MimeType:DataTypes.STRING,
-        
+        refDoctype:DataTypes.STRING,
+        refSeries: {
+          type: DataTypes.STRING,
+        },
         createdBy:{
           type: DataTypes.STRING
         },
