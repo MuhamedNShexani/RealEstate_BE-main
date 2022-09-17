@@ -29,7 +29,7 @@ import Attachment from "../Models/attachment/Attachment.model";
 import CurrencyExchange from "../Models/CurrencyExchangeModels/CurrencyExchange.model";
 
 let dbConfig = {
-  HOST: "localhost",
+  HOST: "DESKTOP-5T8OTAC",
   PORT: 1433,
   USER: "MuhamedShexani",
   PASSWORD: "123456788mmnM",

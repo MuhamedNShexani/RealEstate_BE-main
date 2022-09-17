@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "title PaymentAPI && nodemon server/index.js",
-    "start": "title PaymentAPI && node server/index.js"
+    "start": "title PaymentAPI && nodemon server/index.js"
   },
   "dependencies": {
     "@types/jsonwebtoken": "^8.5.8",

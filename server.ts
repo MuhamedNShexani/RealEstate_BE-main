@@ -44,6 +44,6 @@ const app = new App(
     new UsersController(),
     new DocTypePermissionsController(),
     new AttachmentController()
- ], 8080);
+ ], 8081);
 
 app.listen();
