@@ -4,7 +4,7 @@ class Territory extends Model {
   public Series!: string;
   public Example!: string;
   public Territory!: string;
-  public  Parent!: string;
+  public  parent!: string;
   public  isGroup!:boolean
   // Auto-generated
   public id!: number;
@@ -31,7 +31,7 @@ class Territory extends Model {
           unique:true,
         allowNull: false
         },
-        Parent:{
+        parent:{
           type: DataTypes.STRING
           }
         ,
@@ -47,6 +47,8 @@ class Territory extends Model {
       {
         sequelize: sequelize,
         freezeTableName: true,
+        hasTrigger: true,
+
         name: {
           singular: "Territory",
           plural: "Territory",

@@ -55,7 +55,9 @@ public Default!: boolean;
       },
       {
         sequelize: sequelize,
-        freezeTableName: true,
+        freezeTableName: true,     
+          hasTrigger: true,
+
         name: {
           singular: "Currency",
           plural: "Currency",

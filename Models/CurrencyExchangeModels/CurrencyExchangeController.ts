@@ -217,6 +217,7 @@ class CurrencyExchangeController extends BaseController {
           response.status(404).send("Series " + series + " Not found")
         }
       }).catch((err) => {
+        
         if (err.name == "SequelizeUniqueConstraintError") {
           response.status(400).send({ message: " (CurrencyExchangeName)  has already used . please try another name ." });
         } else
@@ -279,6 +280,8 @@ class CurrencyExchangeController extends BaseController {
 
 
       }).catch((err) => {
+        console.log(err);
+        
         if (err.name == "SequelizeUniqueConstraintError") {
           response.status(400).send({ message: " (CurrencyExchangeName)  has already used . please try another name ." });
         } else
@@ -299,14 +302,23 @@ class CurrencyExchangeController extends BaseController {
     next: express.NextFunction
   ) => {
     const CurrencyExchangeReq = request.params;
-    const { CurrencyExchange } = request.db.models;
+    const { CurrencyExchange,CurrentUser } = request.db.models;
     let result;
     try {
       // const oldCurrencyExchange = await CurrencyExchange.findOne({
       //   where: { Series: CurrencyExchangeReq.series },
       //   attributes: ["Series", "CurrencyExchangeName", "Symbol", "Format", "Enabled", "Default"],
       // });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await CurrencyExchange.destroy({
         where: {
           Series: CurrencyExchangeReq.series, //this will be your id that you want to delete

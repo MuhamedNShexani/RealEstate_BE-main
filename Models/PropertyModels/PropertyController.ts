@@ -167,7 +167,7 @@ class PropertyController extends BaseController {
 
     try {
       const res = await Property.findAll({
-        where: { ...filters },
+        where: { Available:true },
         // attributes: ["Series", "Territory", "Purpose", "Location", "Attributes", "ISFurnished", "Furnitures", "Party", "RequestedAmt", "Currency"],
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),
@@ -281,7 +281,6 @@ class PropertyController extends BaseController {
     let lastSeries;
 
     await Property.findOne({
-
       order: [["id", "DESC"]],
     }).
       then((data: any) => {
@@ -301,6 +300,7 @@ class PropertyController extends BaseController {
 
       result = await Property.create({
         ...PropertyCreate,
+        Available:true,
         Attributes: JSON.stringify(request.body.Attributes),
         Furnitures: JSON.stringify(request.body.Furnitures),
         ExtraPayment: JSON.stringify(request.body.ExtraPayment),
@@ -341,7 +341,7 @@ class PropertyController extends BaseController {
     next: express.NextFunction
   ) => {
     const PropertyReq = request.params;
-    const { Property } = request.db.models;
+    const { Property,CurrentUser } = request.db.models;
     let result;
     try {
       const oldProperty = await Property.findOne({
@@ -353,7 +353,16 @@ class PropertyController extends BaseController {
             err.name || "Some error occurred while findig old Property."
         })
       });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await Property.destroy({
         where: {
           Series: PropertyReq.series, //this will be your id that you want to delete

@@ -192,10 +192,12 @@ class RolesController extends BaseController {
             err.name || "Some error occurred while creating Roles."
         })
       });
+      console.log(RolesUpdate);
+      
 
       result = await Roles.update(
         {
-          ...RolesUpdate,
+          RoleName:RolesUpdate.RoleName,
           updatedBy: request.userName,
           updatedAt: new Date(),
         },
@@ -218,6 +220,8 @@ class RolesController extends BaseController {
           response.status(404).send("Series " + series + " Not found")
         }
       }).catch((err) => {
+        console.log(err);
+        
         if (err.name == "SequelizeUniqueConstraintError") {
           response.status(400).send({ message: "(RoleName) has already used . please try another name." });
         } else
@@ -299,7 +303,7 @@ class RolesController extends BaseController {
     next: express.NextFunction
   ) => {
     const RolesReq = request.params;
-    const { Roles } = request.db.models;
+    const { Roles,CurrentUser } = request.db.models;
     let result;
     try {
       // const oldRoles = await Roles.findOne({
@@ -311,7 +315,16 @@ class RolesController extends BaseController {
       //       err.name || "Some error occurred while finding old Roles."
       //   })
       // });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await Roles.destroy({
         where: {
           Series: RolesReq.series, //this will be your id that you want to delete

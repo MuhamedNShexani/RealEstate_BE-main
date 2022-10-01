@@ -300,14 +300,23 @@ class CurrencyController extends BaseController {
     next: express.NextFunction
   ) => {
     const CurrencyReq = request.params;
-    const { Currency } = request.db.models;
+    const { Currency,CurrentUser } = request.db.models;
     let result;
     try {
       // const oldCurrency = await Currency.findOne({
       //   where: { Series: CurrencyReq.series },
       //   attributes: ["Series", "CurrencyName", "Symbol", "Format", "Enabled", "Default"],
       // });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await Currency.destroy({
         where: {
           Series: CurrencyReq.series, //this will be your id that you want to delete

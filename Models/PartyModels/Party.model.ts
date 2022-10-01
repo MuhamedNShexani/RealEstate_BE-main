@@ -3,8 +3,8 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 class Party extends Model {
 public Series!: string; 
 public FullName!: string;
-public Phone!: number;
-public Cell!: number;
+public Phone!: string;
+public Cell!: string;
 public Address!: string;
 public Gender!: string;
 public Remarks!: string;
@@ -37,10 +37,10 @@ public Remarks!: string;
           allowNull: false
         },
         Phone: {
-          type: DataTypes.INTEGER
+          type: DataTypes.STRING
         },
         Cell: {
-          type: DataTypes.INTEGER
+          type: DataTypes.STRING
         },
         Address: {
           type: DataTypes.STRING
@@ -60,6 +60,7 @@ public Remarks!: string;
       },
       {
         sequelize: sequelize,
+        hasTrigger: true,
         freezeTableName: true,
         name: {
           singular: "Party",

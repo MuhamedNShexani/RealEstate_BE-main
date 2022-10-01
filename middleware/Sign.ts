@@ -3,6 +3,7 @@ import * as express from "express";
 
 import { Sequelize } from "sequelize";
 import Attachment from "../Models/attachment/Attachment.model";
+import Contracts from "../Models/ContractsModels/Contracts.model";
 import Perms from "../Models/PERM/Per.model";
 import Users from "../Models/UsersModels/Users.model";
 
@@ -76,6 +77,7 @@ async function SignMiddlware(
       let models = [     
         Users,
         Perms,
+        Contracts,
         Attachment
       ];
       

@@ -280,6 +280,8 @@ class PartyController extends BaseController {
 
 
       }).catch((err) => {
+        console.log(err);
+        
         if (err.name == "SequelizeUniqueConstraintError") {
           response.status(400).send({ message: " (FullName)  has already used . please try another name ." });
         }
@@ -302,7 +304,7 @@ class PartyController extends BaseController {
     next: express.NextFunction
   ) => {
     const PartyReq = request.params;
-    const { Party } = request.db.models;
+    const { Party,CurrentUser } = request.db.models;
     let result;
     try {
       // const oldParty = await Party.findOne({
@@ -314,7 +316,16 @@ class PartyController extends BaseController {
       //       err.name || "Some error occurred while find old Party."
       //   })
       // });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await Party.destroy({
         where: {
           Series: PartyReq.series, //this will be your id that you want to delete

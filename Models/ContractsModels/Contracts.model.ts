@@ -27,7 +27,10 @@ public IsFurnished!: boolean
 public Furnitures!: string
 public Remarks!: string
 public ExtraPayment!: string
+public PropertyType!: string
 public Lawyer!: string
+
+
 
   // Auto-generated
   public id!: number;
@@ -68,6 +71,10 @@ public Lawyer!: string
         
         },
         Property: {
+          type: DataTypes.STRING,
+        
+        },  
+         PropertyType: {
           type: DataTypes.STRING,
         
         },
@@ -142,6 +149,7 @@ public Lawyer!: string
       {
         sequelize: sequelize,
         freezeTableName: true,
+        hasTrigger:true,
         name: {
           singular: "Contracts",
           plural: "Contracts",

@@ -75,6 +75,8 @@ public Remarks!: string;
       {
         sequelize: sequelize,
         freezeTableName: true,
+        hasTrigger: true,
+
         name: {
           singular: "Payments",
           plural: "Payments",

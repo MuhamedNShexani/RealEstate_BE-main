@@ -310,7 +310,7 @@ class PermsController extends BaseController {
     next: express.NextFunction
   ) => {
     const PermsReq = request.params;
-    const { Perms } = request.db.models;
+    const { Perms,CurrentUser } = request.db.models;
     let result;
     try {
       // const oldPerms = await Perms.findOne({
@@ -322,7 +322,16 @@ class PermsController extends BaseController {
       //       err.name || "Some error occurred while finding old Perms ."
       //   })
       // });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await Perms.destroy({
         where: {
           Series: PermsReq.series, //this will be your id that you want to delete

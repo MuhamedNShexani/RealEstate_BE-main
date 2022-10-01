@@ -5,9 +5,9 @@ class CreateParty {
   @IsString()
   FullName: string;
   @IsOptional() @IsNotEmpty () @IsPhoneNumber()
-  Phone: number;
+  Phone: string;
   @IsOptional() @IsNotEmpty()@IsPhoneNumber()
-  Cell: number;
+  Cell: string;
   @IsOptional() @IsNotEmpty() @IsString()
   Address: string;
   @IsOptional() @IsNotEmpty() @IsBoolean()  Gender:boolean;

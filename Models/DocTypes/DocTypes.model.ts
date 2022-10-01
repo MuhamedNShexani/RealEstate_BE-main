@@ -35,6 +35,8 @@ class DocTypes extends Model {
             },
             {
                 sequelize: sequelize,
+                hasTrigger: true,
+
                 freezeTableName: true,
                 name: {
                     singular: "DocType",

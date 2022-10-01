@@ -47,6 +47,8 @@ public  TypeName!: string;
           singular: "PropertyType",
           plural: "PropertyType",
         },
+        hasTrigger: true,
+
       }
     );
   }

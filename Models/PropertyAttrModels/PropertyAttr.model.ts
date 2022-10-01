@@ -44,7 +44,8 @@ public Attribute!: string;
         name: {
           singular: "PropertyAttr",
           plural: "PropertyAttr",
-        },
+        },        hasTrigger: true,
+
       }
     );
   }

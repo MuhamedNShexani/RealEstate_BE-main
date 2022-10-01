@@ -6,7 +6,6 @@ import HttpException from "../../exceptions/HttpExceptions";
 import NotFoundException from "../../exceptions/NotFoundException";
 import AddingRowException from "../../exceptions/errorInCreatingTable";
 import authMiddleware from "../../middleware/auth.middleware";
-import Permission from "../PermissionModels/Permission.model";
 class BranchesController extends BaseController {
   public get = "/Branches/:series";
   public read = "/Branches/";
@@ -335,8 +334,6 @@ class BranchesController extends BaseController {
     const { Branches } = request.db.models;
     let lastSeries;
 
-    console.log("hello");
-
     // const newBranches: TypeBranches = {
     //   Series: "Bra-" + lastSeries,
     //   BranchName: request.body.BranchName,
@@ -379,6 +376,8 @@ class BranchesController extends BaseController {
       this.io.to(request.UserSeries).emit("Add", { doctype: "Branches", data: result })
     }
     catch (err) {
+      console.log(err);
+      
       if (err.name == "SequelizeUniqueConstraintError") {
         return response.status(400).send({ message: "BranchName has already used . please try another name." });
       } else if (err.name == "SequelizeDatabaseError") {
@@ -396,14 +395,23 @@ class BranchesController extends BaseController {
     next: express.NextFunction
   ) => {
     const BranchesReq = request.params;
-    const { Branches } = request.db.models;
+    const { Branches,CurrentUser } = request.db.models;
     let result;
     try {
       // const oldBranches = await Branches.findOne({
       //   where: { Series: BranchesReq.series },
       //   attributes: ["Series", "BranchName","isGroup","ParentBranch"],
       // });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await Branches.destroy({
         where: {
           Series: BranchesReq.series, //this will be your id that you want to delete

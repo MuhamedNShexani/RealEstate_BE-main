@@ -44,7 +44,8 @@ class Perms extends Model {
         
       },
       {
-        sequelize: sequelize,
+        sequelize: sequelize, 
+         hasTrigger: true,
         freezeTableName: true,
         name: {
           singular: "Perms",

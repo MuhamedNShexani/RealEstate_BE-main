@@ -195,7 +195,7 @@ class TerritoryController extends BaseController {
         {
           Territory: TerritoryUpdate.Territory,
           isGroup: TerritoryUpdate.isGroup,
-          parent: TerritoryUpdate.Parent,
+          parent: request.body.Parent,
           updatedBy: request.userName,
           updatedAt: new Date(),
         },
@@ -276,12 +276,12 @@ class TerritoryController extends BaseController {
       }).then(data => {
         Territory.Series = data.dataValues.Series;
         console.log("User (action)  : Create New [Territory]  By : {" + request.userName + "} , Date:" + Date());
-
-        response.status(201).send(data)
-
         this.io
           .to(request.UserSeries)
           .emit("Add", { doctype: "Territory", data: data });
+
+        response.status(201).send(data)
+
 
       }).catch((err) => {
         if (err.name == "SequelizeUniqueConstraintError") {
@@ -308,7 +308,7 @@ class TerritoryController extends BaseController {
     next: express.NextFunction
   ) => {
     const TerritoryReq = request.params;
-    const { Territory } = request.db.models;
+    const { Territory ,CurrentUser} = request.db.models;
     let result;
     try {
       // const oldTerritory = await Territory.findOne({
@@ -320,7 +320,16 @@ class TerritoryController extends BaseController {
       //       err.name || "Some error occurred while finding old Territory."
       //   })
       // });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await Territory.destroy({
         where: {
           Series: TerritoryReq.series, //this will be your id that you want to delete

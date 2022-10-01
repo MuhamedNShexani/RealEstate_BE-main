@@ -15,7 +15,6 @@ import ContractType from "../Models/ContractTypeModels/ContractType.model";
 import Currency from "../Models/CurrencyModels/Currency.model";
 import Party from "../Models/PartyModels/Party.model";
 import Payments from "../Models/PaymentsModels/Payments.model";
-import Permission from "../Models/PermissionModels/Permission.model";
 import Roles from "../Models/RolesModels/Roles.model";
 import Contracts from "../Models/ContractsModels/Contracts.model"
 import Property from "../Models/PropertyModels/Property.model";
@@ -27,6 +26,7 @@ import DocTypes from "../Models/DocTypes/DocTypes.model";
 import Perms from "../Models/PERM/Per.model";
 import Attachment from "../Models/attachment/Attachment.model";
 import CurrencyExchange from "../Models/CurrencyExchangeModels/CurrencyExchange.model";
+import CurrentUser from "../Models/CurrenctUser/CurrentUser.model";
 
 let dbConfig = {
   HOST: "DESKTOP-5T8OTAC",
@@ -84,7 +84,7 @@ async function authMiddleware(
         const verificationResponse = jwt.verify(token, secret) as Payload;
         // console.log(verificationResponse);
 
-        const CurrentUser = verificationResponse.UserName;
+        const CurrentUser1 = verificationResponse.UserName;
         const UserSeries = verificationResponse.Series;
         // console.log("Current:",UserSeries)
         let sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
@@ -154,7 +154,6 @@ async function authMiddleware(
             Party,
             PrintKeys,
             Payments,
-            Permission,
             Roles,
             Contracts,
             Property,
@@ -163,14 +162,15 @@ async function authMiddleware(
             PropertyType
             , Territory,
             DocTypes,
+            CurrentUser,
             Attachment,
             Users];
 
           models.forEach((model) => model.initialize(sequelize));
-          const perms = await Permission.findOne({
-            where: { RoleSeries: user.dataValues.RoleID },
-            raw: true,
-          });
+          // const perms = await Permission.findOne({
+          //   where: { RoleSeries: user.dataValues.RoleID },
+          //   raw: true,
+          // });
           // const AccountInfo = await Account.findOne({
           //   where: {
           //     Series: user.dataValues.Account,
@@ -178,14 +178,14 @@ async function authMiddleware(
           //   raw: true,
           // });
 
-          user.permissions = perms ? perms.RoleSeries : [];
+          // user.permissions = perms ? perms.RoleSeries : [];
           // request.accountInfo = AccountInfo;
           request.user = user;
-          request.userName = CurrentUser;
+          request.userName = CurrentUser1;
           request.Users = Users;
           request.db = sequelize;
 
-          // request.user = CurrentUser;
+          // request.user = CurrentUser1;
           request.UserSeries = UserSeries;
           next();
         } else {

@@ -26,7 +26,7 @@ class AttachmentController extends BaseController {
   }
 
   public intializeRoutes() {
-    this.router.get(this.get, SignMiddlware, async (req, res, next) => {
+    this.router.get(this.get, authMiddleware, async (req, res, next) => {
       try {
         this.getAttachmentBySeries(req, res, next)
 
@@ -73,7 +73,7 @@ class AttachmentController extends BaseController {
     );
     this.router.get(
       this.Download,
-      SignMiddlware,
+      authMiddleware,
       async (req, res, next) => {
         try {
           this.DownloadAttachment(req, res, next)
@@ -91,7 +91,7 @@ class AttachmentController extends BaseController {
     );
     this.router.get(
       this.view,
-      SignMiddlware,
+      authMiddleware,
       async (req, res, next) => {
         try {
           this.ViewAttachment(req, res, next)
@@ -187,7 +187,7 @@ class AttachmentController extends BaseController {
       const CLIENT_SECRET = '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';
       const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-      const REFRESH_TOKEN = '1//04_bQFY-mL6lPCgYIARAAGAQSNgF-L9IrJa8A7Y5ONsQZxV_sGAxmINoP03jQq_AjqQGX54akqNG8-maP1C6T7RH1LjzueVGajg'
+      const REFRESH_TOKEN = '1//04fXU3FnDo4muCgYIARAAGAQSNgF-L9IrgGdD6c_1gjcpIG9ShcfVjF8dBFvNXKIgNqGBs45hoHmWunuBc5s9CKe-6gxtFu8icA'
   
     const oauth2Client = new google.auth.OAuth2(
       CLIENT_ID,

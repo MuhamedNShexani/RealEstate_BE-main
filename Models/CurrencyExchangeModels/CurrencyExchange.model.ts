@@ -44,6 +44,8 @@ class CurrencyExchange extends Model {
       {
         sequelize: sequelize,
         freezeTableName: true,
+        hasTrigger: true,
+
         name: {
           singular: "CurrencyExchange",
           plural: "CurrencyExchange",

@@ -60,6 +60,7 @@ public Delete!: boolean;
       {
         sequelize: sequelize,
         freezeTableName: true,
+        hasTrigger: true,
         name: {
           singular: "DocTypePermissions",
           plural: "DocTypePermissions",

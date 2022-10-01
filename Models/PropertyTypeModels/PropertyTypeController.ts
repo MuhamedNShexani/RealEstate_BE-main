@@ -284,7 +284,7 @@ class PropertyTypeController extends BaseController {
     next: express.NextFunction
   ) => {
     const PropertyTypeReq = request.params;
-    const { PropertyType } = request.db.models;
+    const { PropertyType,CurrentUser } = request.db.models;
     let result;
     try {
       // const oldPropertyType = await PropertyType.findOne({
@@ -296,7 +296,16 @@ class PropertyTypeController extends BaseController {
       //       err.name || "Some error occurred while finding old PropertyType."
       //   })
       // });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await PropertyType.destroy({
         where: {
           Series: PropertyTypeReq.series, //this will be your id that you want to delete

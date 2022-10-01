@@ -300,7 +300,7 @@ class PurposeController extends BaseController {
     next: express.NextFunction
   ) => {
     const PurposeReq = request.params;
-    const { Purpose } = request.db.models;
+    const { Purpose,CurrentUser } = request.db.models;
     let result;
     try {
       // const oldPurpose = await Purpose.findOne({
@@ -312,7 +312,16 @@ class PurposeController extends BaseController {
       //       err.name || "Some error occurred while finding old Purpose."
       //   })
       // });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await Purpose.destroy({
         where: {
           Series: PurposeReq.series, //this will be your id that you want to delete

@@ -329,7 +329,7 @@ class PaymentsController extends BaseController {
     next: express.NextFunction
   ) => {
     const PaymentsReq = request.params;
-    const { Payments } = request.db.models;
+    const { Payments,CurrentUser } = request.db.models;
     let result;
     try {
       // const oldPayments = await Payments.findOne({
@@ -341,7 +341,16 @@ class PaymentsController extends BaseController {
       //       err.name || "Some error occurred while finding old Payments."
       //   })
       // });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await Payments.destroy({
         where: {
           Series: PaymentsReq.series, //this will be your id that you want to delete

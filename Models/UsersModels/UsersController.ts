@@ -218,7 +218,7 @@ UsersResult.dataValues.Password=null;
       result = await Users.update(
         {
           ...UsersUpdate,
-          updatedBy: request.body.UserName ? request.body.UserName : oldUsers.dataValues.UserName,
+          updatedBy:  request.userName,
           updatedAt: new Date(),
         },
         {
@@ -229,17 +229,12 @@ UsersResult.dataValues.Password=null;
 
         }
       ).then(data => {
-        let userName;
 
         if (data[0] == 1) {
-          if (request.body.UserName != undefined) {
-            userName = request.body.UserName;
-          } else {
-            userName = oldUsers.dataValues.UserName
-          }
+        
 
           let secret;
-          let user = { UserName: userName, Series: request.params.series }
+          let user = { UserName: request.userName, Series: request.params.series }
           // console.log(user)
           if (process.env.ACCESS_TOKEN_SECRET == undefined) {
             response.send("something went wrong")
@@ -249,7 +244,7 @@ UsersResult.dataValues.Password=null;
           const accessToken = jwt.sign(user, secret, { expiresIn: "100h" })
           console.log("User (action)  : Update [Users] " + Date());
 
-          response.send("updated");
+          response.status(201).send("updated");
           this.io
             .to(request.user.Series)
             .emit("Update", { doctype: "Users", data: UsersUpdate });
@@ -313,7 +308,7 @@ UsersResult.dataValues.Password=null;
       await Users.create({
         ...UsersCreate,
         Series: "USR-" + lastSeries,
-        createdBy: request.body.UserName,
+        createdBy: request.userName,
         createdAt: new Date(),
       }).then(data => {
         let user = { UserName: data.dataValues.UserName, Series: data.dataValues.Series }
@@ -323,7 +318,7 @@ UsersResult.dataValues.Password=null;
         } else {
           secret = process.env.ACCESS_TOKEN_SECRET;
         }
-        const accessToken = jwt.sign(user, secret, { expiresIn: "2h" })
+        const accessToken = jwt.sign(user, secret, { expiresIn: "168h" })
 
         Users.Series = data.dataValues.Series;
         console.log("User (action)  : Create New [Users] " + Date());
@@ -334,6 +329,8 @@ UsersResult.dataValues.Password=null;
           .emit("Add", { doctype: "Users", data: data });
 
       }).catch((err) => {
+        console.log(err);
+        
         if (err.name == "SequelizeUniqueConstraintError") {
           if (err.errors[0].message == "UQ__Users__fullname must be unique") {
             response.status(400).send({ message: "(FullName) has already used . please try another name." });
@@ -365,7 +362,7 @@ UsersResult.dataValues.Password=null;
     next: express.NextFunction
   ) => {
     const UsersReq = request.params;
-    const { Users } = request.db.models;
+    const { Users,CurrentUser } = request.db.models;
     let result;
     try {
       const oldUsers = await Users.findOne({
@@ -377,7 +374,16 @@ UsersResult.dataValues.Password=null;
             err.name || "Some error occurred while finding old Users."
         })
       });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await Users.destroy({
         where: {
           Series: UsersReq.series, //this will be your id that you want to delete
@@ -460,7 +466,7 @@ UsersResult.dataValues.Password=null;
               secret = process.env.ACCESS_TOKEN_SECRET;
             }
             let user = { UserName: data.dataValues.UserName,defaultCurrency:data.dataValues.DefaultCurrency, Series: data.dataValues.Series, RoleID: data.dataValues.RoleID }
-            const accessToken = jwt.sign(user, secret, { expiresIn: "72h" });
+            const accessToken = jwt.sign(user, secret, { expiresIn: "168h" });
             // console.log(user);
 
             let Pusher = require('pusher');
@@ -524,6 +530,11 @@ UsersResult.dataValues.Password=null;
               action: "read",
               subject: "DASH",
             })
+            if(data.dataValues.Disabled){
+              response.send({
+                accessToken: accessToken, userSeries: user.Series,defaultCurrency:user.defaultCurrency,message:"You are disabled"
+              })  
+            }else
             response.send({
               accessToken: accessToken, userSeries: user.Series,defaultCurrency:user.defaultCurrency, Permissions: A
             })

@@ -44,6 +44,8 @@ public RoleName!: string;
           singular: "Roles",
           plural: "Roles",
         },
+        hasTrigger: true,
+
       }
     );
   }

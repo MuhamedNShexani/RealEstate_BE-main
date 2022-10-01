@@ -198,6 +198,12 @@ class ContractsController extends BaseController {
         response.status(400).send({ message: err.name })
 
       } 
+      let i:any
+      for(i in request.body.ExtraPayment)
+      {          
+        request.body.ExtraPayment[i].ContractDate=ContractsUpdate.ContractDate
+        // request.body.ExtraPayment[i].ContractEnds=ContractsCreate.ContractEnds
+      }
       result = await Contracts.update(
         {
           ...ContractsUpdate,
@@ -216,10 +222,8 @@ class ContractsController extends BaseController {
       ).then(async(data) => {
 
         if (data[0] == 1) {
-          if(ContractsUpdate.IsSale==true){
             await Property.update(
-              {
-                Party: ContractsUpdate.SecondParty,
+              {Show:false,
                 updatedBy: request.userName,
                 updatedAt: new Date(),
               },
@@ -229,7 +233,7 @@ class ContractsController extends BaseController {
                 },
               }
             )
-          }
+          
           
           response.status(201).send("updated");
 
@@ -283,6 +287,10 @@ class ContractsController extends BaseController {
         response.status(400).send({ message: "First Party must be owner" })
 
       }
+      if(ContractsCreate.HandoverDate<ContractsCreate.ContractStarts || ContractsCreate.HandoverDate>ContractsCreate.ContractEnds  ){
+        response.status(400).send({ message: "Handover Date must Between ContractStarts and ContractEnds" })
+
+      }
 
     } catch (err) {
       response.status(400).send({ message: err.name })
@@ -310,7 +318,16 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
           })
         });
       let result;
+      let i:any
       try {
+        for(i in request.body.ExtraPayment)
+        {          
+          request.body.ExtraPayment[i].ContractSeries="CON-" + lastSeries
+          request.body.ExtraPayment[i].ContractDate=ContractsCreate.ContractDate
+          // request.body.ExtraPayment[i].ContractEnds=ContractsCreate.ContractEnds
+        }
+
+
         await Contracts.create({
           ...ContractsCreate,
           ExtraPayment:JSON.stringify(request.body.ExtraPayment),
@@ -324,10 +341,9 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
           // console.log(data.dataValues.SecondParty);
 
           console.log("User (action)  : Create new [Contracts] By : {" + request.userName + "} , Date: " + Date());
-          if(data.dataValues.IsSale==true){
               await Property.update(
             {
-              Party: data.dataValues.SecondParty,
+              Show:false,
               updatedBy: request.userName,
               updatedAt: new Date(),
             },
@@ -337,7 +353,6 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
               },
             }
           )
-          }
         
           response.status(201).send(data)
 
@@ -348,7 +363,6 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
 
         }).catch((err) => {
           console.log(err);
-          
           if (err.index != undefined)
             response.status(400).send({ message: "error in forign key " + err.index + " || should be exist ." });
           else {
@@ -374,7 +388,7 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
     next: express.NextFunction
   ) => {
     const ContractsReq = request.params;
-    const { Contracts } = request.db.models;
+    const { Contracts,CurrentUser,Property } = request.db.models;
     let result;
     try {
       const oldContracts = await Contracts.findOne({
@@ -387,11 +401,35 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
             err.name || "Some error occurred while find old Contracts."
         })
       });
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
+
       await Contracts.destroy({
         where: {
           Series: ContractsReq.series, //this will be your id that you want to delete
         },
-      }).then((num: number) => {
+      }).then(async (num: number) => {
+          await Property.update(
+        {
+          Show:true,
+          updatedBy: request.userName,
+          updatedAt: new Date(),
+        },
+        {
+          where: {
+            Series: oldContracts.dataValues.Property,
+          },
+        }
+      )
+      
         if (num == 1) {
           console.log("User (action)  : delete one [Contracts]  By : {" + request.userName + "} , Date:" + Date());
           this.io
@@ -407,6 +445,8 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
           });
         }
       }).catch((err: any) => {
+        console.log(err);
+        
         if(err.name=="SequelizeForeignKeyConstraintError"){
           response.status(400).send({
          message:

@@ -305,7 +305,7 @@ class ContractTypeController extends BaseController {
     next: express.NextFunction
   ) => {
     const ContractTypeReq = request.params;
-    const { ContractType } = request.db.models;
+    const { ContractType,CurrentUser } = request.db.models;
     let result;
     try {
       // const oldContractType = await ContractType.findOne({
@@ -317,7 +317,16 @@ class ContractTypeController extends BaseController {
       //       err.name || "Some error occurred while finding old ContractType."
       //   })
       // });
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await ContractType.destroy({
         where: {
           Series: ContractTypeReq.series, //this will be your id that you want to delete

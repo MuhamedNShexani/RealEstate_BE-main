@@ -7,7 +7,6 @@ import ContractTypeController from "./Models/ContractTypeModels/ContractTypeCont
 import CurrencyController from "./Models/CurrencyModels/CurrencyController";
 import PartyController from "./Models/PartyModels/PartyController";
 import PaymentsController from "./Models/PaymentsModels/PaymentsController";
-import PermissionController from "./Models/PermissionModels/PermissionController";
 import PropertyAttrController from "./Models/PropertyAttrModels/PropertyAttrController";
 import PropertyController from "./Models/PropertyModels/PropertyController";
 import PropertyTypeController from "./Models/PropertyTypeModels/PropertyTypeController";
@@ -21,6 +20,7 @@ import PermsController from "./Models/PERM/Perms.controller";
 import DocTypePermissionsController from "./Models/DocTypePermissions/DocTypePermissions.Controller";
 import AttachmentController from "./Models/attachment/AttachmentAPI";
 import CurrencyExchangeController from "./Models/CurrencyExchangeModels/CurrencyExchangeController";
+import ReportsController from "./Models/ReportsModels/ReportsController";
 
 const app = new App(
     [new TerritoryController(),
@@ -31,7 +31,6 @@ const app = new App(
     new CurrencyController(),
     new PartyController(),
     new PaymentsController(),
-    new PermissionController(),
     new PropertyAttrController(),
     new PropertyController(),
     new CurrencyExchangeController(),
@@ -43,7 +42,8 @@ const app = new App(
     new PermsController(),
     new UsersController(),
     new DocTypePermissionsController(),
-    new AttachmentController()
+    new AttachmentController(),
+    new ReportsController()
  ], 8080);
 
 app.listen();

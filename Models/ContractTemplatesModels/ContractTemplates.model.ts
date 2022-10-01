@@ -47,6 +47,9 @@ class ContractTemplates extends Model {
       },
       {
         sequelize: sequelize,
+        // hasTrigger:true,
+        freezeTableName: true,
+
         name: {
           singular: "ContractTemplates",
           plural: "ContractTemplates",

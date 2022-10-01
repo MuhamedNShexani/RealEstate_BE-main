@@ -48,6 +48,7 @@ class Branches extends Model {
       {
         sequelize: sequelize,
         freezeTableName: true,
+        hasTrigger: true,
         name: {
           singular: "Branches",
           plural: "Branches",

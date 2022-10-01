@@ -301,11 +301,20 @@ class PropertyAttrController extends BaseController {
     next: express.NextFunction
   ) => {
     const PropertyAttrReq = request.params;
-    const { PropertyAttr } = request.db.models;
+    const { PropertyAttr ,CurrentUser} = request.db.models;
     let result;
     try {
 
-
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await PropertyAttr.destroy({
         where: {
           Series: PropertyAttrReq.series, //this will be your id that you want to delete

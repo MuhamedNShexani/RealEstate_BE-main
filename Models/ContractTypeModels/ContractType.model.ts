@@ -38,10 +38,12 @@ public ContractType!: string;
       },
       {
         sequelize: sequelize,
+        hasTrigger: true,
         freezeTableName: true,
         name: {
           singular: "ContractType",
           plural: "ContractType",
+          
         },
       }
     );

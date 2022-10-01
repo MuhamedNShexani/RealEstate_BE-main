@@ -2,7 +2,7 @@ import HttpException from "./HttpExceptions";
 
 class AuthenticationTokenMissingException extends HttpException {
   constructor() {
-    super(403, `Token Does not exist`);
+    super(401, `Token Does not exist`);
   }
 }
 

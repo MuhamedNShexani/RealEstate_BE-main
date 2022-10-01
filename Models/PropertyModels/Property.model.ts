@@ -5,8 +5,10 @@ public Series!: string;
 public  Territory!: string; 
 public  Purpose!: string; 
 public  Location!: string; 
+public  PropertyType!: string; 
 public  Attributes!: string; 
 public  IsFurnished!: boolean; 
+public  Available!: boolean; 
 public  Furnitures!: string; 
 public  Party!: string; 
 public  RequestedAmt!: number; 
@@ -44,10 +46,16 @@ public  Currency!: string;
         Location:{
           type: DataTypes.STRING
         },
+        PropertyType:{
+          type: DataTypes.STRING
+        },
         Attributes:{
           type: DataTypes.STRING
         },
         IsFurnished: {
+          type: DataTypes.BOOLEAN
+        },
+        Available: {
           type: DataTypes.BOOLEAN
         },
         Furnitures:{
@@ -85,6 +93,8 @@ public  Currency!: string;
           singular: "Property",
           plural: "Property",
         },
+        hasTrigger: true,
+
       }
     );
   }

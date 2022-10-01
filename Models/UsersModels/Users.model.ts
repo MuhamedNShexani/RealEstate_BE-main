@@ -96,6 +96,7 @@ public  DefaultCurrency!: string;
             }
           }
         }, sequelize: sequelize,
+        hasTrigger: true,
               freezeTableName: true,
               name: {
                 singular: "Users",

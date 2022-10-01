@@ -221,6 +221,7 @@ class ContractTemplatesController extends BaseController {
           response.status(404).send(series + " Not found");
         }
       }).catch((err) => {
+        console.log(err)
         if (err.name == "SequelizeUniqueConstraintError") {
           response.status(400).send({ message: "TemplateName has already used . please try another name." });
         } else
@@ -228,6 +229,7 @@ class ContractTemplatesController extends BaseController {
       })
     }
     catch (error) {
+      console.log(error)
       next(new AddingRowException(error, "UpdateContractTemplates"));
 
       return;
@@ -264,10 +266,13 @@ class ContractTemplatesController extends BaseController {
 
     let result;
     try {
-console.log(request.userName);
 
+      // request.body.HTML=request.body.HTML.replaceAll("<", "&lt;");
+      // request.body.HTML=request.body.HTML.replaceAll(">", "&gt;");
+      
       result = await ContractTemplates.create({
         ...ContractTemplatesCreate,
+        HTML:request.body.HTML,
         Series: "CTEMP-" + lastSeries,
         createdBy: request.userName,
         createdAt: new Date(),
@@ -282,6 +287,7 @@ console.log(request.userName);
 
 
       }).catch((err) => {
+        console.log(err)
         if (err.name == "SequelizeUniqueConstraintError") {
           response.status(400).send({ message: "TemplateName has already used . please try another name." });
         } else
@@ -289,6 +295,8 @@ console.log(request.userName);
       })
 
     } catch (error) {
+      console.log(error);
+      
       next(new AddingRowException(error, "CreateContractTemplates"));
       return;
     }
@@ -302,19 +310,28 @@ console.log(request.userName);
     next: express.NextFunction
   ) => {
     const ContractTemplatesReq = request.params;
-    const { ContractTemplates } = request.db.models;
+    const { ContractTemplates,CurrentUser } = request.db.models;
     let result;
     try {
-      const oldContractTemplates = await ContractTemplates.findOne({
-        where: { Series: ContractTemplatesReq.series },
-        attributes: ["Series", "TemplateName", "DocType", "PrintFormat"],
-      }).catch((err: any) => {
-        response.status(400).send({
-          message:
-            err.name || "Some error occurred while find old ContractTEmplates."
-        })
-      });
-
+      // const oldContractTemplates = await ContractTemplates.findOne({
+      //   where: { Series: ContractTemplatesReq.series },
+      //   attributes: ["Series", "TemplateName", "DocType", "PrintFormat"],
+      // }).catch((err: any) => {
+      //   response.status(400).send({
+      //     message:
+      //       err.name || "Some error occurred while find old ContractTEmplates."
+      //   })
+      // });
+      await CurrentUser.update(
+        {
+         CurrentUser:request.userName
+        },
+        {
+          where: {
+            ID: 1,
+          },
+        }
+      )
       await ContractTemplates.destroy({
         where: {
           Series: ContractTemplatesReq.series, //this will be your id that you want to delete
@@ -323,7 +340,7 @@ console.log(request.userName);
         if (num == 1) {
           console.log("User (action)  : Delete one [ContractTemplates]  By : {" + request.userName + "} , Date:" + Date());
 
-          return response.send({
+           response.send({
             message: "ContractTemplates was deleted successfully!"
           });
         } else {
@@ -331,7 +348,7 @@ console.log(request.userName);
             message: `Cannot delete ContractTemplates with Series=${ContractTemplatesReq.series}. Maybe ContractTemplates was not found!`
           });
         }
-      }).catch((err: any) => {
+      }).catch((err: any) => {        
         response.status(400).send({
           message:
             err.name || "Some error occurred while deleting ContractTemplates."
@@ -342,7 +359,7 @@ console.log(request.userName);
         .emit("Delete", { doctype: "ContractTemplate", data: ContractTemplatesReq });
       next();
 
-    } catch (error) {
+    } catch (error) {      
       response.status(400).send({
         message:
           error.message || "Some error occurred while Deleting the ContractTemplates."
