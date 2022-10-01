@@ -17,7 +17,7 @@ class LawyerController extends BaseController {
 
   public router = express.Router();
   public Lawyer: any; //new Lawyer();
-  public DOCTYPE = ["DT-5"]; //keep current Docktype at the first always
+  public DOCTYPE = ["DT-18"]; //keep current Docktype at the first always
 
   constructor() {
     super();
