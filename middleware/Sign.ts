@@ -4,7 +4,7 @@ import * as express from "express";
 import { Sequelize } from "sequelize";
 import Attachment from "../Models/attachment/Attachment.model";
 import Contracts from "../Models/ContractsModels/Contracts.model";
-import Perms from "../Models/PERM/Per.model";
+import Perms from "../Models/Permission/Permission.model";
 import Users from "../Models/UsersModels/Users.model";
 
 

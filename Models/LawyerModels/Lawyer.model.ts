@@ -1,13 +1,13 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
-class DocTypePermissions extends Model {
+class Lawyer extends Model {
 public Series!: string; 
-public RoleSeries!: string;
-public DocTypeID!: boolean; 
-public  Read!: boolean; 
-public  Write!: boolean;
-public Create!: boolean;
-public Delete!: boolean;
+public FullName!: string;
+public Phone!: string;
+public Cell!: string;
+public Address!: string;
+public Gender!: string;
+public Remarks!: string;
 
   // Auto-generated
   public id!: number;
@@ -20,35 +20,36 @@ public Delete!: boolean;
 
     this.init(
       {
-        ID:{
+        ID: {
           type: DataTypes.INTEGER,
-          unique:true,
+          unique: true,
           autoIncrement: true,
     
         },
         Series: {
           type: DataTypes.STRING,
           primaryKey: true,
-        allowNull: false
+          allowNull: false
         },
-        RoleSeries:{
+        FullName: {
           type: DataTypes.STRING,
-         },
-        DocTypeID:{
-         type: DataTypes.STRING,
-        //  require:true
-       },
-        Read: {
+          unique: true,
+          allowNull: false
+        },
+        Phone: {
+          type: DataTypes.STRING
+        },
+        Cell: {
+          type: DataTypes.STRING
+        },
+        Address: {
+          type: DataTypes.STRING
+        },
+        Gender: {
           type: DataTypes.BOOLEAN
         },
-        Write: {
-          type: DataTypes.BOOLEAN
-        },
-        Create: {
-          type: DataTypes.BOOLEAN
-        },
-        Delete: {
-          type: DataTypes.BOOLEAN
+        Remarks: {
+          type: DataTypes.STRING
         },
         createdBy:{
           type: DataTypes.STRING
@@ -59,15 +60,15 @@ public Delete!: boolean;
       },
       {
         sequelize: sequelize,
-        freezeTableName: true,
         hasTrigger: true,
+        freezeTableName: true,
         name: {
-          singular: "DocTypePermissions",
-          plural: "DocTypePermissions",
+          singular: "Lawyer",
+          plural: "Lawyer",
         },
       }
     );
   }
 }
 
-export default DocTypePermissions;
+export default Lawyer;

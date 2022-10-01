@@ -23,17 +23,18 @@ import PropertyAttr from "../Models/PropertyAttrModels/PropertyAttr.model";
 import PropertyType from "../Models/PropertyTypeModels/PropertyType.model";
 import Users from "../Models/UsersModels/Users.model";
 import DocTypes from "../Models/DocTypes/DocTypes.model";
-import Perms from "../Models/PERM/Per.model";
+import Perms from "../Models/Permission/Permission.model";
 import Attachment from "../Models/attachment/Attachment.model";
 import CurrencyExchange from "../Models/CurrencyExchangeModels/CurrencyExchange.model";
-import CurrentUser from "../Models/CurrenctUser/CurrentUser.model";
+import CurrentUser from "../Models/CurrentUser/CurrentUser.model";
+import Lawyer from "../Models/LawyerModels/Lawyer.model";
 
 let dbConfig = {
-  HOST: "DESKTOP-5T8OTAC",
-  PORT: 1433,
-  USER: "MuhamedShexani",
-  PASSWORD: "123456788mmnM",
-  DB: "RealEstate",
+  HOST: process.env.SERVER,
+  PORT:1433,
+  USER: process.env.USER,
+  PASSWORD: process.env.PASSWORD,
+  DB: process.env.DATABASE,
   dialect: "mssql",
   pool: {
     max: 5,
@@ -147,6 +148,7 @@ async function authMiddleware(
 
           let models = [Branches,
             Perms,
+            Lawyer,
             CurrencyExchange,
             ContractTemplates,
             ContractType,

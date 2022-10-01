@@ -16,11 +16,11 @@ import UsersController from "./Models/UsersModels/UsersController";
 import App from "./app";
 import PrintKeys from "./Models/PrintKey/PrintKey.controllers";
 import DocTypes from "./Models/DocTypes/DocTypes.controllers";
-import PermsController from "./Models/PERM/Perms.controller";
-import DocTypePermissionsController from "./Models/DocTypePermissions/DocTypePermissions.Controller";
+import PermsController from "./Models/Permission/Permission.controller";
 import AttachmentController from "./Models/attachment/AttachmentAPI";
 import CurrencyExchangeController from "./Models/CurrencyExchangeModels/CurrencyExchangeController";
 import ReportsController from "./Models/ReportsModels/ReportsController";
+import LawyerController from "./Models/LawyerModels/LawyerController";
 
 const app = new App(
     [new TerritoryController(),
@@ -39,9 +39,9 @@ const app = new App(
     new RolesController(),
     new PrintKeys(),
     new DocTypes(),
+    new LawyerController(),
     new PermsController(),
     new UsersController(),
-    new DocTypePermissionsController(),
     new AttachmentController(),
     new ReportsController()
  ], 8080);

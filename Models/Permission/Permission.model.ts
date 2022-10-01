@@ -48,8 +48,8 @@ class Perms extends Model {
          hasTrigger: true,
         freezeTableName: true,
         name: {
-          singular: "Perms",
-          plural: "Perms",
+          singular: "Permission",
+          plural: "Permission",
         },
       }
     );

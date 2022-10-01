@@ -1,8 +1,8 @@
 const  config = {
-    user:  'MuhamedShexani', // sql user
-    password:  '123456788mmnM', //sql user password
-    server:  'localhost', // if it does not work try- localhost
-    database:  'RealEstate',
+    user:  process.env.USER, // sql user
+    password:  process.env.PASSWORD, //sql user password
+    server:  process.env.SERVER, // if it does not work try- localhost
+    database:  process.env.DATABASE,
     options: {
       trustedconnection:  true,
       enableArithAbort:  true,
