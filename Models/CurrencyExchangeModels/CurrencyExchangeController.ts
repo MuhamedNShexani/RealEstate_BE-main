@@ -142,6 +142,8 @@ class CurrencyExchangeController extends BaseController {
     try {
       const res = await CurrencyExchange.findAll({
         where: { ...filters },
+        order: [["id", "DESC"]],
+
         // attributes: ["Series", "CurrencyExchangeName", "Symbol", "Format", "Enabled", "Default"],
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),

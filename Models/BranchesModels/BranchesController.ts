@@ -233,6 +233,7 @@ class BranchesController extends BaseController {
         where: { ...filters },
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),
+        order: [["id", "DESC"]]
       }).then(data => {
         if (data.length == 0) {
           console.log({ message: " there is no data ... in tbl Branches" });

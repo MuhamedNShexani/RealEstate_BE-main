@@ -9,8 +9,7 @@ public Series!: string;
 public ContractType!: string;
 public Property!: string;
 public Attributes!: string;
-public IsSale!: boolean;
-public IsRent!: boolean
+public TypeOfTran!: boolean;
 public ContractStarts!: Date;
 public ContractEnds!: Date;
 public HandoverDate!: Date;
@@ -29,6 +28,7 @@ public Remarks!: string
 public ExtraPayment!: string
 public PropertyType!: string
 public Lawyer!: string
+public MethodOfPayment!:number;
 
 
 
@@ -77,11 +77,12 @@ public Lawyer!: string
          PropertyType: {
           type: DataTypes.STRING,
         
-        },
-        IsSale: {
-          type: DataTypes.BOOLEAN
-        },
-        IsRent: {
+        }, 
+        MethodOfPayment: {
+          type: DataTypes.INTEGER,
+        
+        },  
+        TypeOfTran: {
           type: DataTypes.BOOLEAN
         },
         ContractStarts: {

@@ -143,6 +143,8 @@ class CurrencyController extends BaseController {
     try {
       const res = await Currency.findAll({
         where: { ...filters },
+        order: [["id", "DESC"]],
+
         // attributes: ["Series", "CurrencyName", "Symbol", "Format", "Enabled", "Default"],
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),

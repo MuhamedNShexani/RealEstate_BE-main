@@ -141,6 +141,7 @@ class PurposeController extends BaseController {
     try {
       const res = await Purpose.findAll({
         where: { ...filters },
+        order: [["id", "DESC"]],
         // attributes: ["Series", "Purpose", "IsPayable", "DefaultAmt", "DefaultCurrency"],
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),

@@ -143,6 +143,8 @@ class ContractTemplatesController extends BaseController {
     try {
       const res = await ContractTemplates.findAll({
         where: { ...filters },
+        order: [["id", "DESC"]],
+
         // attributes: ["Series", "TemplateName", "DocType", "PrintFormat"],
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),

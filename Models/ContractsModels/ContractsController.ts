@@ -142,6 +142,8 @@ class ContractsController extends BaseController {
     try {
       const res = await Contracts.findAll({
         where: { ...filters },
+        order: [["id", "DESC"]],
+
         // attributes: ["Series", "ContractDate", "FirstParty", "SecondParty", "Property", "IsSale", "IsRent", "ContractStarts", "ContractEnds", "HandoverDate", "RequestedAmt", "PaidAmt", "PaidCurrency", "RentFor",
         //   "RentCurrency", "AdvanceAmt", "AdvanceCurrency", "InsuranceAmt", "InsuranceCurrency", "IsFurnished", "Furnitures", "Remarks", "ExtraPayment", "Lawyer"]
         offset: parseInt(page) * parseInt(pageSize),
@@ -181,9 +183,9 @@ class ContractsController extends BaseController {
     let series = request.params.series;
     let result;
     try {
-      if (ContractsUpdate.IsRent == ContractsUpdate.IsSale)
-        response.status(400).send({ message: " the property of contract should be for Rent Or for Sale check one of this two value" })
-      else{
+      // if (ContractsUpdate.IsRent == ContractsUpdate.IsSale)
+      //   response.status(400).send({ message: " the property of contract should be for Rent Or for Sale check one of this two value" })
+  
         try {
         let owner = await Property.findOne({ where: { Series: ContractsUpdate.Property } })
         if (ContractsUpdate.FirstParty == null) {
@@ -223,7 +225,7 @@ class ContractsController extends BaseController {
 
         if (data[0] == 1) {
             await Property.update(
-              {Show:false,
+              {Available:false,
                 updatedBy: request.userName,
                 updatedAt: new Date(),
               },
@@ -258,7 +260,7 @@ class ContractsController extends BaseController {
         }
       })
 
-    }
+    
     }
     catch (error) {
       next(new AddingRowException(error, "Contracts"));
@@ -279,29 +281,27 @@ class ContractsController extends BaseController {
     let lastSeries;
     
     try {
+     console.log(request.body);
+     
       let owner = await Property.findOne({ where: { Series: ContractsCreate.Property } })
       if (ContractsCreate.FirstParty == null) {
         ContractsCreate.FirstParty = owner.dataValues.Party
 
       } else if (ContractsCreate.FirstParty != owner.dataValues.Party) {
         response.status(400).send({ message: "First Party must be owner" })
-
       }
       if(ContractsCreate.HandoverDate<ContractsCreate.ContractStarts || ContractsCreate.HandoverDate>ContractsCreate.ContractEnds  ){
         response.status(400).send({ message: "Handover Date must Between ContractStarts and ContractEnds" })
-
       }
-
     } catch (err) {
       response.status(400).send({ message: err.name })
-
     }
 
-    if (ContractsCreate.IsRent == ContractsCreate.IsSale)
-      response.status(400).send({ message: " the property of contract should be for Rent Or for Sale check one of this two value" })
-else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
+    // if (ContractsCreate.IsRent == ContractsCreate.IsSale)
+    //   response.status(400).send({ message: " the property of contract should be for Rent Or for Sale check one of this two value" })
+ if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
       response.status(400).send({ message: "[First Party] and [Second party] must be different  " })
-    } else {
+}
       await Contracts.findOne({
         order: [["id", "DESC"]],
       }).
@@ -334,16 +334,20 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
           Attributes:JSON.stringify(request.body.Attributes),
           Furnitures: JSON.stringify(request.body.Furnitures),
           Series: "CON-" + lastSeries,
+          MethodOfPayment:1,
           createdBy: request.userName,
           createdAt: new Date(),
         }).then(async data => {
           Contracts.Series = data.dataValues.Series;
           // console.log(data.dataValues.SecondParty);
+          this.io
+            .to(request.UserSeries)
+            .emit("Add", { doctype: "Contracts", data: data });
 
           console.log("User (action)  : Create new [Contracts] By : {" + request.userName + "} , Date: " + Date());
               await Property.update(
             {
-              Show:false,
+              Available:false,
               updatedBy: request.userName,
               updatedAt: new Date(),
             },
@@ -356,9 +360,6 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
         
           response.status(201).send(data)
 
-          this.io
-            .to(request.UserSeries)
-            .emit("Add", { doctype: "Contracts", data: data });
 
 
         }).catch((err) => {
@@ -379,7 +380,7 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
         next(new AddingRowException(error, "Contracts"));
         return;
       }
-    }
+    
     next();
   };
   deleteContracts = async (
@@ -387,14 +388,15 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
     response: express.Response,
     next: express.NextFunction
   ) => {
-    const ContractsReq = request.params;
+    const ContractsReq = request.params.series;
     const { Contracts,CurrentUser,Property } = request.db.models;
     let result;
     try {
+      
       const oldContracts = await Contracts.findOne({
-        where: { Series: ContractsReq.series },
-        attributes: ["Series", "ContractDate", "FirstParty", "SecondParty", "Property", "IsSale", "IsRent", "ContractStarts", "ContractEnds", "HandoverDate", "RequestedAmt", "PaidAmt", "PaidCurrency", "RentFor",
-          "RentCurrency", "AdvanceAmt", "InsuranceAmt", "AdvanceCurrency", "InsuranceAmt", "InsuranceCurrency", "IsFurnished", "Furnitures", "Remarks", "ExtraPayment", "Lawyer"],
+        where: { Series: ContractsReq },
+        // attributes: ["Series", "ContractDate", "FirstParty", "SecondParty", "Property", "IsSale", "IsRent", "ContractStarts", "ContractEnds", "HandoverDate", "RequestedAmt", "PaidAmt", "PaidCurrency", "RentFor",
+        //   "RentCurrency", "AdvanceAmt", "InsuranceAmt", "AdvanceCurrency", "InsuranceAmt", "InsuranceCurrency", "IsFurnished", "Furnitures", "Remarks", "ExtraPayment", "Lawyer"],
       }).catch((err: any) => {
         response.status(400).send({
           message:
@@ -414,12 +416,12 @@ else if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
 
       await Contracts.destroy({
         where: {
-          Series: ContractsReq.series, //this will be your id that you want to delete
+          Series: ContractsReq, //this will be your id that you want to delete
         },
       }).then(async (num: number) => {
           await Property.update(
         {
-          Show:true,
+          Available:true,
           updatedBy: request.userName,
           updatedAt: new Date(),
         },

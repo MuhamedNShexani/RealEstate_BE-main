@@ -143,6 +143,7 @@ class TerritoryController extends BaseController {
       const res = await Territory.findAll({
         where: { ...filters },
         // attributes: ["Series", "Territory", "Parent", "isGroup"],
+        order: [["id", "DESC"]],
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),
       }).then(data => {

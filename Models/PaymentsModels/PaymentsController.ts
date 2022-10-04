@@ -141,6 +141,7 @@ class PaymentsController extends BaseController {
     try {
       const res = await Payments.findAll({
         where: { ...filters },
+        order: [["id", "DESC"]],
         // attributes: ["Series", "PostingDate", "Reference", "Purpose", "Amount", "Currency", "For", "Remarks"],
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),

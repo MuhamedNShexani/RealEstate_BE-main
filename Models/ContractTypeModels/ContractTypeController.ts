@@ -143,6 +143,8 @@ class ContractTypeController extends BaseController {
     try {
       const res = await ContractType.findAll({
         where: { ...filters },
+        order: [["id", "DESC"]],
+
         // attributes: ["Series", "ContractType"],
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),
@@ -274,11 +276,11 @@ class ContractTypeController extends BaseController {
 
         ContractType.Series = data.dataValues.Series;
         console.log("User (action)  : Create New [ContractType] By : {" + request.userName + "} , Date: " + Date());
+        this.io
+        .to(request.UserSeries)
+        .emit("Add", { doctype: "ContractType", data: data });
 
         response.status(201).send(data);
-        this.io
-          .to(request.UserSeries)
-          .emit("Add", { doctype: "ContractType", data: data });
 
 
 

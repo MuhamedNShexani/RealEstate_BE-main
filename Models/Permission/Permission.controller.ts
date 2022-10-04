@@ -143,7 +143,8 @@ class PermsController extends BaseController {
 
     try {
       const res = await Perms.findAll({
-        where: { ...filters }
+        where: { ...filters },
+        order: [["id", "DESC"]],
         // attributes: ["Series", "RoleSeries", "DocTypeID", "Read", "Write", "Create", "Delete"],
         // offset: parseInt(page) * parseInt(pageSize),
         // limit: parseInt(pageSize),

@@ -139,6 +139,7 @@ class PropertyTypeController extends BaseController {
     const { PropertyType } = request.db.models;
     await PropertyType.findAll({
       where: {},
+      order: [["id", "DESC"]],
       // attributes: ["Series", "TypeName"],
     }).then(data => {
       if (data.length == 0) {

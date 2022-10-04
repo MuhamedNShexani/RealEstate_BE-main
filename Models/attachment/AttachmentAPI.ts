@@ -245,7 +245,7 @@ else{
       const CLIENT_SECRET = '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';
       const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-      const REFRESH_TOKEN = '1//04_bQFY-mL6lPCgYIARAAGAQSNgF-L9IrJa8A7Y5ONsQZxV_sGAxmINoP03jQq_AjqQGX54akqNG8-maP1C6T7RH1LjzueVGajg'
+      const REFRESH_TOKEN = '1//04Ha8ocIklDBuCgYIARAAGAQSNgF-L9IrXfYYkPR63YwuE5iO_21UD3gKLl4aCV34tGhzszrsVpbWMS33YEXT5n1MYsJk8yOHqQ'
       const oauth2Client = new google.auth.OAuth2(
         CLIENT_ID,
         CLIENT_SECRET,
@@ -354,6 +354,8 @@ else{
       }
     }
     } catch (error) {
+      console.log(error);
+      
       next(new AddingRowException(error, "Attachment"));
       return;
     }
@@ -423,7 +425,8 @@ else{
       // );
 
     } catch (error) {
-      
+      console.log(error);
+
       next(new AddingRowException(error, "Attachment"));
       return;
     }
@@ -477,7 +480,9 @@ else{
       
       response.status(200).send(result.data.webViewLink)
 
-    } catch (error) {      
+    } catch (error) { 
+      console.log(error);
+     
       next(new AddingRowException(error, "Attachment"));
       return;
     }
@@ -528,6 +533,8 @@ else{
         response.status(200).send(data)
       })
     } catch (error) {
+      console.log(error);
+
       response.status(400).send({
         message:
           error.name || "Some error occurred while Deleting the Attachment."

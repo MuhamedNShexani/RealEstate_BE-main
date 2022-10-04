@@ -7,8 +7,8 @@ class CreateContracts {
   @IsString() SecondParty: string;
   // @IsOptional() @IsNotEmpty() @IsString() Series: string;
   @IsString() Property: string;
-  @IsOptional() @IsNotEmpty() @IsBoolean() IsSale: boolean;
-  @IsOptional() @IsNotEmpty() @IsBoolean() IsRent: boolean
+  @IsOptional() @IsNotEmpty() @IsNumber() MethodOfPayment: number;
+  @IsOptional() @IsNotEmpty() @IsBoolean() TypeOfTran: boolean;
   @IsOptional() @IsNotEmpty() @IsNumber() InsuranceAmt: number
   @IsOptional() @IsNotEmpty() @IsDateString() ContractStarts: Date;
   @IsOptional() @IsNotEmpty() @IsDateString() ContractEnds: Date;
@@ -17,7 +17,7 @@ class CreateContracts {
   @IsOptional() @IsNotEmpty() @IsNumber() PaidAmt: number;
   @IsOptional() @IsNotEmpty() @IsString() PaidCurrency: string
   @IsOptional() @IsNotEmpty() @IsString() RentFor: string
- @IsNotEmpty() @IsString() RentCurrency: string
+//  @IsNotEmpty() @IsString() RentCurrency: string
   @IsOptional() @IsNotEmpty() @IsNumber() AdvanceAmt: number
   @IsOptional() @IsNotEmpty() @IsString() AdvanceCurrency: string
   @IsOptional() @IsNotEmpty() @IsString() InsuranceCurrency: string

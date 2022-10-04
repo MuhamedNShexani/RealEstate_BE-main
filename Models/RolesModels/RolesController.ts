@@ -143,6 +143,7 @@ class RolesController extends BaseController {
       const res = await Roles.findAll({
         where: { ...filters },
         // attributes: ["Series", "RoleName"],
+        order: [["id", "DESC"]],
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),
       }).then(data => {

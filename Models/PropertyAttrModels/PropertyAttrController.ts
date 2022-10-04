@@ -143,6 +143,7 @@ class PropertyAttrController extends BaseController {
         where: { ...filters },
         // attributes: ["Series", "Attribute"],
         offset: parseInt(page) * parseInt(pageSize),
+        order: [["id", "DESC"]],
         limit: parseInt(pageSize),
       }).then(data => {
         if (data.length == 0) {

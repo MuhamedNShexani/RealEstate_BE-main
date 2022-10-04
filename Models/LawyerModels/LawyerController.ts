@@ -140,6 +140,7 @@ class LawyerController extends BaseController {
     try {
       const res = await Lawyer.findAll({
         where: { ...filters },
+        order: [["id", "DESC"]],
         // attributes: ["Series", "FullName", "Phone", "Cell", "Address", "Gender", "Remarks"] , 
         offset: parseInt(page) * parseInt(pageSize),
         limit: parseInt(pageSize),
