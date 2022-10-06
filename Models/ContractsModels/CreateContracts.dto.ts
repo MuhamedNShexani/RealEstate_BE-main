@@ -1,4 +1,4 @@
-import {  IsString, IsNumber, IsBoolean, IsDateString, IsOptional, IsNotEmpty } from "class-validator";
+import { IsString, IsNumber, IsBoolean, IsDateString, IsOptional, IsNotEmpty } from "class-validator";
 
 class CreateContracts {
 
@@ -18,7 +18,7 @@ class CreateContracts {
   // @IsOptional()  @IsString() PaidCurrency: string
   // @IsOptional()  @IsString() RentCurrency: string
   // @IsOptional() @IsNumber() RentFor: number
-//  @IsNotEmpty() @IsString() RentCurrency: string
+  //  @IsNotEmpty() @IsString() RentCurrency: string
   @IsOptional() @IsNotEmpty() @IsNumber() AdvanceAmt: number
   @IsOptional() @IsNotEmpty() @IsString() AdvanceCurrency: string
   @IsOptional() @IsNotEmpty() @IsString() InsuranceCurrency: string

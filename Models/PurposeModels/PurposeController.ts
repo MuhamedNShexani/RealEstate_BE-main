@@ -301,7 +301,7 @@ class PurposeController extends BaseController {
     next: express.NextFunction
   ) => {
     const PurposeReq = request.params;
-    const { Purpose,CurrentUser } = request.db.models;
+    const { Purpose, CurrentUser } = request.db.models;
     let result;
     try {
       // const oldPurpose = await Purpose.findOne({
@@ -315,7 +315,7 @@ class PurposeController extends BaseController {
       // });
       await CurrentUser.update(
         {
-         CurrentUser:request.userName
+          CurrentUser: request.userName
         },
         {
           where: {
@@ -344,18 +344,18 @@ class PurposeController extends BaseController {
           });
         }
       }).catch((err: any) => {
-        if(err.name=="SequelizeForeignKeyConstraintError"){
+        if (err.name == "SequelizeForeignKeyConstraintError") {
           response.status(400).send({
-         message:
-          "Sorry You can't delete this because its reference to another page "
-       })
-       }
-       else {
-        response.status(400).send({
-          message:
-            err.name || "Some error occurred while deleting Purpose."
-        })
-      }
+            message:
+              "Sorry You can't delete this because its reference to another page "
+          })
+        }
+        else {
+          response.status(400).send({
+            message:
+              err.name || "Some error occurred while deleting Purpose."
+          })
+        }
       })
       next();
 

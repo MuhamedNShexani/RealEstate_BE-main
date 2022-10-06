@@ -1,11 +1,11 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class Attachment extends Model {
-  
+
   public name!: string;
   public Link!: string;
   public refSeries!: string;
-  public refDoctype!:string;
+  public refDoctype!: string;
   // Auto-generated
   public id!: string;
   public createdAt!: Date;
@@ -14,31 +14,32 @@ class Attachment extends Model {
   public updatedBy!: String;
 
   public static initialize(sequelize: Sequelize) {
-    
-    this.init(
-      { id:{
-        primaryKey: true,
-        type: DataTypes.STRING,
-        unique: true,
 
-      },
-      name: {
+    this.init(
+      {
+        id: {
+          primaryKey: true,
+          type: DataTypes.STRING,
+          unique: true,
+
+        },
+        name: {
           type: DataTypes.STRING,
         },
-        Link:{
+        Link: {
           type: DataTypes.STRING,
         },
-        refDoctype:DataTypes.STRING,
+        refDoctype: DataTypes.STRING,
         refSeries: {
           type: DataTypes.STRING,
         },
-        createdBy:{
+        createdBy: {
           type: DataTypes.STRING
         },
-        updatedBy:{
+        updatedBy: {
           type: DataTypes.STRING
         }
-        
+
       },
       {
         sequelize: sequelize,

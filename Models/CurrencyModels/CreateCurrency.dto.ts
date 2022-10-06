@@ -1,4 +1,4 @@
-import {  IsString, IsBoolean, IsOptional, IsNotEmpty } from "class-validator";
+import { IsString, IsBoolean, IsOptional, IsNotEmpty } from "class-validator";
 
 class CreateCurrency {
   // @IsOptional() @IsNotEmpty() @IsString() Series: string;

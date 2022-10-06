@@ -1,12 +1,12 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class Currency extends Model {
-public Series!: string;
-public CurrencyName!: string;
-public Symbol!: string;
-public Format!: string;
-public Enabled!: boolean;
-public Default!: boolean;
+  public Series!: string;
+  public CurrencyName!: string;
+  public Symbol!: string;
+  public Format!: string;
+  public Enabled!: boolean;
+  public Default!: boolean;
 
   // Auto-generated
   public id!: number;
@@ -23,7 +23,7 @@ public Default!: boolean;
           type: DataTypes.INTEGER,
           unique: true,
           autoIncrement: true,
-    
+
         },
         Series: {
           type: DataTypes.STRING,
@@ -46,17 +46,17 @@ public Default!: boolean;
         },
         Default: {
           type: DataTypes.BOOLEAN
-        },   createdBy:{
+        }, createdBy: {
           type: DataTypes.STRING
         },
-        updatedBy:{
+        updatedBy: {
           type: DataTypes.STRING
         }
       },
       {
         sequelize: sequelize,
-        freezeTableName: true,     
-          hasTrigger: true,
+        freezeTableName: true,
+        hasTrigger: true,
 
         name: {
           singular: "Currency",

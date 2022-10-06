@@ -18,15 +18,15 @@ class DocTypes extends Model {
         this.init(
             {
 
-                Series:{
+                Series: {
                     type: DataTypes.STRING,
                     unique: true,
                 },
-               DocType:{
-                type: DataTypes.STRING,
-                unique: true,
+                DocType: {
+                    type: DataTypes.STRING,
+                    unique: true,
 
-               },
+                },
                 createdAt: { type: DataTypes.DATE },
                 updatedAt: { type: DataTypes.DATE },
                 updatedBy: { type: DataTypes.STRING },

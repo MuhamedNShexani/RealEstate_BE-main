@@ -57,22 +57,6 @@ class BranchesController extends BaseController {
       try {
         this.getAllBranches(req, res, next)
 
-        // Permission.findOne({
-        //   where:{
-        //     DocTypeID:this.DOCTYPE,
-        //     RoleSeries:req.user.permissions
-        //   }
-        // }).then((data)=>{
-
-        //   if(data?.Read){            
-        //     this.getAllBranches(req, res, next)
-        //   }
-        //   else{
-        //     res.send({message:"You dont have permission to do that"})
-        //   }
-
-        // })
-
       } catch (error) {
         console.log(error);
         next(
@@ -215,20 +199,6 @@ class BranchesController extends BaseController {
 
 
     try {
-      //   var  config = require('../../db/config.ts');
-      //   const  sql = require('mssql');
-      //   let  pool = await  sql.connect(config);
-      //   let  products = await  pool.request().query(
-      //     "select distinct(Party.Series) as owner,COUNT(Party.Series) as [number of Property] from Property p join Party on p.Party=Party.Series group by Party.Series");
-      // response.status(200).send(products.recordsets)
-      //   var  config = require('../../db/config.ts');
-      //   const  sql = require('mssql');
-      //   let  pool = await  sql.connect(config);
-      //   let ss="PROP-1"
-      //   let  products = await  pool.request().query(
-      //     "select  dbo.getSeriesToGettingOwner('"+ss+"') as Owner");
-      // response.status(200).send(products.recordsets)
-
       await Branches.findAll({
         where: { ...filters },
         offset: parseInt(page) * parseInt(pageSize),
@@ -378,7 +348,7 @@ class BranchesController extends BaseController {
     }
     catch (err) {
       console.log(err);
-      
+
       if (err.name == "SequelizeUniqueConstraintError") {
         return response.status(400).send({ message: "BranchName has already used . please try another name." });
       } else if (err.name == "SequelizeDatabaseError") {
@@ -396,7 +366,7 @@ class BranchesController extends BaseController {
     next: express.NextFunction
   ) => {
     const BranchesReq = request.params;
-    const { Branches,CurrentUser } = request.db.models;
+    const { Branches, CurrentUser } = request.db.models;
     let result;
     try {
       // const oldBranches = await Branches.findOne({
@@ -405,7 +375,7 @@ class BranchesController extends BaseController {
       // });
       await CurrentUser.update(
         {
-         CurrentUser:request.userName
+          CurrentUser: request.userName
         },
         {
           where: {
@@ -434,19 +404,19 @@ class BranchesController extends BaseController {
           });
         }
       }).catch((err: any) => {
-        if(err.name=="SequelizeForeignKeyConstraintError"){
+        if (err.name == "SequelizeForeignKeyConstraintError") {
           response.status(400).send({
-         message:
-          "Sorry You can't delete this because its reference to another page "
-       })
-       }
-       else {
-        response.status(400).send({
-          message:
-            err.name || "Some error occurred while deleting Branches."
-        })
+            message:
+              "Sorry You can't delete this because its reference to another page "
+          })
+        }
+        else {
+          response.status(400).send({
+            message:
+              err.name || "Some error occurred while deleting Branches."
+          })
 
-      }
+        }
       })
 
 

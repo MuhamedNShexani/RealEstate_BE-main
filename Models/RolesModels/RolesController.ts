@@ -194,11 +194,11 @@ class RolesController extends BaseController {
         })
       });
       console.log(RolesUpdate);
-      
+
 
       result = await Roles.update(
         {
-          RoleName:RolesUpdate.RoleName,
+          RoleName: RolesUpdate.RoleName,
           updatedBy: request.userName,
           updatedAt: new Date(),
         },
@@ -222,7 +222,7 @@ class RolesController extends BaseController {
         }
       }).catch((err) => {
         console.log(err);
-        
+
         if (err.name == "SequelizeUniqueConstraintError") {
           response.status(400).send({ message: "(RoleName) has already used . please try another name." });
         } else
@@ -304,7 +304,7 @@ class RolesController extends BaseController {
     next: express.NextFunction
   ) => {
     const RolesReq = request.params;
-    const { Roles,CurrentUser } = request.db.models;
+    const { Roles, CurrentUser } = request.db.models;
     let result;
     try {
       // const oldRoles = await Roles.findOne({
@@ -318,7 +318,7 @@ class RolesController extends BaseController {
       // });
       await CurrentUser.update(
         {
-         CurrentUser:request.userName
+          CurrentUser: request.userName
         },
         {
           where: {
@@ -346,17 +346,18 @@ class RolesController extends BaseController {
           });
         }
       }).catch((err: any) => {
-        if(err.name=="SequelizeForeignKeyConstraintError"){
+        if (err.name == "SequelizeForeignKeyConstraintError") {
           response.status(400).send({
-         message:
-          "Sorry You can't delete this because its reference to another page "
-       })
-       }
-       else {
-        response.status(400).send({
-          message:
-            err.name || "Some error occurred while deleting Roles."
-        })}
+            message:
+              "Sorry You can't delete this because its reference to another page "
+          })
+        }
+        else {
+          response.status(400).send({
+            message:
+              err.name || "Some error occurred while deleting Roles."
+          })
+        }
       })
       next();
 

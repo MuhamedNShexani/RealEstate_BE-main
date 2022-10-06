@@ -1,8 +1,8 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class Roles extends Model {
-public Series!: string; 
-public RoleName!: string; 
+  public Series!: string;
+  public RoleName!: string;
 
   // Auto-generated
   public id!: number;
@@ -15,27 +15,28 @@ public RoleName!: string;
 
     this.init(
       {
-        ID:{
+        ID: {
           type: DataTypes.INTEGER,
-          unique:true,
-    
+          unique: true,
+
         },
         Series: {
           type: DataTypes.STRING,
           primaryKey: true,
-        allowNull: false
+          allowNull: false
         },
-        RoleName:{
+        RoleName: {
           type: DataTypes.STRING,
-          unique:true,
-        allowNull: false
+          unique: true,
+          allowNull: false
         },
-        createdBy:{
+        createdBy: {
           type: DataTypes.STRING
         },
-        updatedBy:{
+        updatedBy: {
           type: DataTypes.STRING
-        }}
+        }
+      }
       ,
       {
         sequelize: sequelize,

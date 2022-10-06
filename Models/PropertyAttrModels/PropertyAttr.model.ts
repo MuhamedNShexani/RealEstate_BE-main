@@ -1,8 +1,8 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class PropertyAttr extends Model {
-public Series!: string; 
-public Attribute!: string;
+  public Series!: string;
+  public Attribute!: string;
 
   // Auto-generated
   public id!: number;
@@ -15,26 +15,26 @@ public Attribute!: string;
 
     this.init(
       {
-        ID:{
+        ID: {
           type: DataTypes.INTEGER,
-          unique:true,
+          unique: true,
           autoIncrement: true,
-    
+
         },
         Series: {
           type: DataTypes.STRING,
           primaryKey: true,
-        allowNull: false
+          allowNull: false
         },
-        Attribute:{
+        Attribute: {
           type: DataTypes.STRING,
-          unique:true,
-        allowNull: false
+          unique: true,
+          allowNull: false
         },
-        createdBy:{
+        createdBy: {
           type: DataTypes.STRING
         },
-        updatedBy:{
+        updatedBy: {
           type: DataTypes.STRING
         }
       },
@@ -44,7 +44,7 @@ public Attribute!: string;
         name: {
           singular: "PropertyAttr",
           plural: "PropertyAttr",
-        },        hasTrigger: true,
+        }, hasTrigger: true,
 
       }
     );

@@ -1,6 +1,6 @@
 interface Payload {
   UserName: string;
-  Series:string
+  Series: string
 }
 
 export default Payload;

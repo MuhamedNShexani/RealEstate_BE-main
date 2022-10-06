@@ -330,7 +330,7 @@ class PaymentsController extends BaseController {
     next: express.NextFunction
   ) => {
     const PaymentsReq = request.params;
-    const { Payments,CurrentUser } = request.db.models;
+    const { Payments, CurrentUser } = request.db.models;
     let result;
     try {
       // const oldPayments = await Payments.findOne({
@@ -344,7 +344,7 @@ class PaymentsController extends BaseController {
       // });
       await CurrentUser.update(
         {
-         CurrentUser:request.userName
+          CurrentUser: request.userName
         },
         {
           where: {
@@ -368,18 +368,19 @@ class PaymentsController extends BaseController {
             message: `Cannot delete Payments with Series=${PaymentsReq.series}. Maybe Payments was not found!`
           });
         }
-      }).catch((err: any) => { 
-        if(err.name=="SequelizeForeignKeyConstraintError"){
-        response.status(400).send({
-       message:
-        "Sorry You can't delete this because its reference to another page "
-     })
-     }
-     else {
-        response.status(400).send({
-          message:
-            err.name || "Some error occurred while deleting Payments."
-        })}
+      }).catch((err: any) => {
+        if (err.name == "SequelizeForeignKeyConstraintError") {
+          response.status(400).send({
+            message:
+              "Sorry You can't delete this because its reference to another page "
+          })
+        }
+        else {
+          response.status(400).send({
+            message:
+              err.name || "Some error occurred while deleting Payments."
+          })
+        }
       })
       this.io
         .to(request.UserSeries)

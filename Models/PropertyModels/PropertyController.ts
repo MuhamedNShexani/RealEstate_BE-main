@@ -128,8 +128,8 @@ class PropertyController extends BaseController {
       next(new NotFoundException(series, "Property"));
       return;
     }
-    PropertyResult.dataValues.Furnitures=PropertyResult.dataValues.Furnitures==null?[] :JSON.parse(PropertyResult.dataValues.Furnitures)
-    PropertyResult.dataValues.Attributes=PropertyResult.dataValues.Attributes==null?[]:JSON.parse(PropertyResult.dataValues.Attributes)    
+    PropertyResult.dataValues.Furnitures = PropertyResult.dataValues.Furnitures == null ? [] : JSON.parse(PropertyResult.dataValues.Furnitures)
+    PropertyResult.dataValues.Attributes = PropertyResult.dataValues.Attributes == null ? [] : JSON.parse(PropertyResult.dataValues.Attributes)
     console.log("User (action)  : get by Series [Property]  By : {" + request.userName + "} , Date:" + Date());
 
     response.send(PropertyResult);
@@ -143,28 +143,7 @@ class PropertyController extends BaseController {
     const { page, pageSize, filters } = request.query;
     const { Property } = request.db.models;
 
-    // satelize.satelize({ip:"66.171.248.170"},(err,payload)=>{
-    //   if(err)console.log(err);
-
-    //   console.log(payload);
-
-    // })
-
-    // const options = {
-    //   provider: 'mapquest',
-    // httpadapter:"https",
-    //   // Optional depending on the providers
-    //   apiKey: "G2iFTmnRks81xnLHz3k6O3zmdQdukxut", // for Mapquest, OpenCage, Google Premier
-    //   formatter: null // 'gpx', 'string', ...
-    // };
-
-    // const geocoder = NodeGeocoder(options);
-
-    // Using callback
-    // const res = await geocoder.geocode('29 champs elysée paris');
-    // let loc=await geocoder.geocode("Gölbaşı, Savur/Mardin, Turkey")
-    // console.log(loc);
-
+  
     try {
       const res = await Property.findAll({
         // where: { Available:true },
@@ -172,28 +151,29 @@ class PropertyController extends BaseController {
         offset: parseInt(page) * parseInt(pageSize),
         order: [["id", "DESC"]],
         limit: parseInt(pageSize),
-      }).then((data:any) => {
+      }).then((data: any) => {
         if (data.length == 0) {
           console.log({ message: " there is no data ... in tbl Property" });
           response.send(data);
         }
-        else {let i:any
+        else {
+          let i: any
           console.log("User (action)  : GetAll [Property]  By : {" + request.userName + "} , Date:" + Date());
-          for( i in data){            
-            if(data[i].dataValues.Furnitures==null){
-              data[i].dataValues.Furnitures=[]
+          for (i in data) {
+            if (data[i].dataValues.Furnitures == null) {
+              data[i].dataValues.Furnitures = []
             }
-            if(data[i].dataValues.Attributes==null){
-              data[i].dataValues.Attributes=[]
+            if (data[i].dataValues.Attributes == null) {
+              data[i].dataValues.Attributes = []
             }
 
           }
-          
+
           response.send(data);
         }
       }).catch((err: any) => {
         console.log(err);
-        
+
         response.status(400).send({
           message:
             err.name || "Some error occurred while Finding All Property."
@@ -301,7 +281,7 @@ class PropertyController extends BaseController {
 
       result = await Property.create({
         ...PropertyCreate,
-        Available:true,
+        Available: true,
         Attributes: JSON.stringify(request.body.Attributes),
         Furnitures: JSON.stringify(request.body.Furnitures),
         ExtraPayment: JSON.stringify(request.body.ExtraPayment),
@@ -318,7 +298,7 @@ class PropertyController extends BaseController {
           .emit("Add", { doctype: "Property", data: data });
 
       }).catch((err: any) => {
-        
+
         if (err.index != undefined)
           response.status(400).send({ message: "error in forign key " + err.index + " || should be exist ." });
         else {
@@ -342,7 +322,7 @@ class PropertyController extends BaseController {
     next: express.NextFunction
   ) => {
     const PropertyReq = request.params;
-    const { Property,CurrentUser } = request.db.models;
+    const { Property, CurrentUser } = request.db.models;
     let result;
     try {
       const oldProperty = await Property.findOne({
@@ -356,7 +336,7 @@ class PropertyController extends BaseController {
       });
       await CurrentUser.update(
         {
-         CurrentUser:request.userName
+          CurrentUser: request.userName
         },
         {
           where: {
@@ -384,17 +364,18 @@ class PropertyController extends BaseController {
           });
         }
       }).catch((err: any) => {
-        if(err.name=="SequelizeForeignKeyConstraintError"){
+        if (err.name == "SequelizeForeignKeyConstraintError") {
           response.status(400).send({
-         message:
-          "Sorry You can't delete this because its reference to another page "
-       })
-       }
-       else {
-        response.status(400).send({
-          message:
-            err.name || "Some error occurred while deleting Property."
-        })}
+            message:
+              "Sorry You can't delete this because its reference to another page "
+          })
+        }
+        else {
+          response.status(400).send({
+            message:
+              err.name || "Some error occurred while deleting Property."
+          })
+        }
       })
       next();
 

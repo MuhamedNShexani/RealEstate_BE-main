@@ -1,4 +1,4 @@
-import {  IsString, IsNumber, IsBoolean, IsOptional, IsNotEmpty } from "class-validator";
+import { IsString, IsNumber, IsBoolean, IsOptional, IsNotEmpty } from "class-validator";
 
 class CreateProperty {
   // @IsOptional() @IsNotEmpty() @IsString() Series: string;

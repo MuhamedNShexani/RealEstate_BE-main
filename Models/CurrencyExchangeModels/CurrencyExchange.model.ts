@@ -30,11 +30,11 @@ class CurrencyExchange extends Model {
           primaryKey: true,
           allowNull: false
         },
-         Date: DataTypes.DATE,
-         FromCurrency: DataTypes.STRING,
-         ToCurrency: DataTypes.STRING,
-         RateExchange: DataTypes.FLOAT,
-         createdBy: {
+        Date: DataTypes.DATE,
+        FromCurrency: DataTypes.STRING,
+        ToCurrency: DataTypes.STRING,
+        RateExchange: DataTypes.FLOAT,
+        createdBy: {
           type: DataTypes.STRING
         },
         updatedBy: {

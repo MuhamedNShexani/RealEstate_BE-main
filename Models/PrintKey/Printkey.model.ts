@@ -3,7 +3,7 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 class PrintKeys extends Model {
     public PrintKey!: string;
     public Arabic!: string;
-    public Kurdish!: string;    
+    public Kurdish!: string;
     public Turkish !: string;
     public Doctype!: string;
     public ReplacementObject!: string;

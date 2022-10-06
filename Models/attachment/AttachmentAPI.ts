@@ -52,7 +52,7 @@ class AttachmentController extends BaseController {
         );
       }
     });
-    
+
     this.router.post(
       this.create,
       authMiddleware,
@@ -184,11 +184,11 @@ class AttachmentController extends BaseController {
     const { google } = require('googleapis');
 
     const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
-      const CLIENT_SECRET = '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';
-      const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+    const CLIENT_SECRET = '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';
+    const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-      const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
-  
+    const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
+
     const oauth2Client = new google.auth.OAuth2(
       CLIENT_ID,
       CLIENT_SECRET,
@@ -230,102 +230,62 @@ class AttachmentController extends BaseController {
       const { refDoctype, refSeries } = request.query;
 
       if (!image) return response.sendStatus(400);
-else{
-
-      function bufferToStream(buffer) {
-        var stream = new Readable();
-        stream.push(buffer);
-        stream.push(null);
-
-        return stream;
-      }
-
-      const { google } = require('googleapis');
-
-      const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
-      const CLIENT_SECRET = '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';
-      const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
-
-      const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
-      const oauth2Client = new google.auth.OAuth2(
-        CLIENT_ID,
-        CLIENT_SECRET,
-        REDIRECT_URI
-      );
-
-      oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-
-      const drive = google.drive({
-        version: 'v3',
-        auth: oauth2Client,
-      });
-
-
-
-      // mimetype=
-      // image/jpeg
-      // application/vnd.oasis.opendocument.spreadsheet
-      // image/png
-      // application/vnd.ms-powerpoint
-      // application/vnd.ms-excel
-
-      //   const MIME_TYPES = {
-      //     'imgs/jpeg': 'jpeg',
-      //     'image/png': 'png',
-      //     'application/vnd.oasis.opendocument.spreadsheet':'application/vnd.oasis.opendocument.spreadsheet',
-      //     'application/vnd.ms-powerpoint':'application/vnd.ms-powerpoint',
-      //     'application/vnd.ms-excel':'application/vnd.ms-excel'
-      // }
-
-      if (request.files.image.length == undefined) {
-
-        const media = {
-          mimeType: request.files.image.mimetype,
-          body: bufferToStream(request.files.image.data)
-        };
-        const file = await drive.files.create({
-          resource: {
-            name: request.files.image.name,
-            'parents': ["19V08sFwBEy9epXg1I5yh9k9T-Ht3tDs4"],
-          },
-          media: media,
-          fields: 'id'
-        });
-
-        const result = await drive.files.get({
-          fileId: file.data.id,
-          fields: 'webViewLink, webContentLink',
-        });
-        // FileLink.push({link:'https://drive.google.com/file/d/'+file.data.id+'/view'});
-
-        const Attach = await Attachment.create(
-          {
-            id: file.data.id,
-            name: request.files.image.name,
-            Link: result.data.webViewLink,
-            refDoctype: refDoctype,
-            bufferData: request.files.image.data,
-            // MimeType:request.files.image[i].mimetype,
-            refSeries: refSeries,
-            createdBy: request.userName,
-            createdAt: new Date(),
-          })
-
-
-        console.log("User (action)  : create new [Attachment]  By : {" + request.userName + "} , Date:" + Date());
-
-        response.status(200).send(Attach)
-      }
       else {
 
-        for (var i in request.files.image) {
+        function bufferToStream(buffer) {
+          var stream = new Readable();
+          stream.push(buffer);
+          stream.push(null);
+
+          return stream;
+        }
+
+        const { google } = require('googleapis');
+
+        const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
+        const CLIENT_SECRET = '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';
+        const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+
+        const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
+        const oauth2Client = new google.auth.OAuth2(
+          CLIENT_ID,
+          CLIENT_SECRET,
+          REDIRECT_URI
+        );
+
+        oauth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+        const drive = google.drive({
+          version: 'v3',
+          auth: oauth2Client,
+        });
+
+
+
+        // mimetype=
+        // image/jpeg
+        // application/vnd.oasis.opendocument.spreadsheet
+        // image/png
+        // application/vnd.ms-powerpoint
+        // application/vnd.ms-excel
+
+        //   const MIME_TYPES = {
+        //     'imgs/jpeg': 'jpeg',
+        //     'image/png': 'png',
+        //     'application/vnd.oasis.opendocument.spreadsheet':'application/vnd.oasis.opendocument.spreadsheet',
+        //     'application/vnd.ms-powerpoint':'application/vnd.ms-powerpoint',
+        //     'application/vnd.ms-excel':'application/vnd.ms-excel'
+        // }
+
+        if (request.files.image.length == undefined) {
+
           const media = {
-            mimeType: request.files.image[i].mimetype,
-            body: bufferToStream(request.files.image[i].data)
+            mimeType: request.files.image.mimetype,
+            body: bufferToStream(request.files.image.data)
           };
           const file = await drive.files.create({
             resource: {
-              name: request.files.image[i].name,
+              name: request.files.image.name,
               'parents': ["19V08sFwBEy9epXg1I5yh9k9T-Ht3tDs4"],
             },
             media: media,
@@ -336,27 +296,67 @@ else{
             fileId: file.data.id,
             fields: 'webViewLink, webContentLink',
           });
+          // FileLink.push({link:'https://drive.google.com/file/d/'+file.data.id+'/view'});
 
           const Attach = await Attachment.create(
             {
               id: file.data.id,
-              name: request.files.image[i].name,
+              name: request.files.image.name,
               Link: result.data.webViewLink,
               refDoctype: refDoctype,
+              bufferData: request.files.image.data,
               // MimeType:request.files.image[i].mimetype,
               refSeries: refSeries,
               createdBy: request.userName,
               createdAt: new Date(),
             })
+
+
           console.log("User (action)  : create new [Attachment]  By : {" + request.userName + "} , Date:" + Date());
 
           response.status(200).send(Attach)
         }
+        else {
+
+          for (var i in request.files.image) {
+            const media = {
+              mimeType: request.files.image[i].mimetype,
+              body: bufferToStream(request.files.image[i].data)
+            };
+            const file = await drive.files.create({
+              resource: {
+                name: request.files.image[i].name,
+                'parents': ["19V08sFwBEy9epXg1I5yh9k9T-Ht3tDs4"],
+              },
+              media: media,
+              fields: 'id'
+            });
+
+            const result = await drive.files.get({
+              fileId: file.data.id,
+              fields: 'webViewLink, webContentLink',
+            });
+
+            const Attach = await Attachment.create(
+              {
+                id: file.data.id,
+                name: request.files.image[i].name,
+                Link: result.data.webViewLink,
+                refDoctype: refDoctype,
+                // MimeType:request.files.image[i].mimetype,
+                refSeries: refSeries,
+                createdBy: request.userName,
+                createdAt: new Date(),
+              })
+            console.log("User (action)  : create new [Attachment]  By : {" + request.userName + "} , Date:" + Date());
+
+            response.status(200).send(Attach)
+          }
+        }
       }
-    }
     } catch (error) {
       console.log(error);
-      
+
       next(new AddingRowException(error, "Attachment"));
       return;
     }
@@ -375,12 +375,12 @@ else{
 
       const { google } = require('googleapis');
 
-     
-    const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
-    const CLIENT_SECRET = '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';
-    const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-    const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
+      const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
+      const CLIENT_SECRET = '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';
+      const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+
+      const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
 
       const oauth2Client = new google.auth.OAuth2(
         CLIENT_ID,
@@ -409,8 +409,8 @@ else{
         fileId: fileId,
         fields: 'webViewLink, webContentLink',
       });
-      console.log("User (action)  : Download [Attachment]  By : {} , Date:"+Date());
-      
+      console.log("User (action)  : Download [Attachment]  By : {} , Date:" + Date());
+
       response.status(200).send(result.data.webContentLink)
       // drive.files.get(
       //   {
@@ -452,7 +452,7 @@ else{
       const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
       const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
-  
+
       const oauth2Client = new google.auth.OAuth2(
         CLIENT_ID,
         CLIENT_SECRET,
@@ -480,12 +480,12 @@ else{
         fileId: fileId,
         fields: 'webViewLink, webContentLink',
       });
-      
+
       response.status(200).send(result.data.webViewLink)
 
-    } catch (error) { 
+    } catch (error) {
       console.log(error);
-     
+
       next(new AddingRowException(error, "Attachment"));
       return;
     }
@@ -505,15 +505,15 @@ else{
     let fileid = request.params.id
     let refSeries = request.params.refSeries
 
-console.log("Hello from Delete");
+    console.log("Hello from Delete");
 
 
     const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
-      const CLIENT_SECRET = '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';
-      const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+    const CLIENT_SECRET = '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';
+    const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-      const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
-  
+    const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
+
     const oauth2Client = new google.auth.OAuth2(
       CLIENT_ID,
       CLIENT_SECRET,

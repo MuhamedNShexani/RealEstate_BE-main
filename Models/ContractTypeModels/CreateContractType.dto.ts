@@ -1,4 +1,4 @@
-import {  IsString, IsOptional, IsNotEmpty } from "class-validator";
+import { IsString, IsOptional, IsNotEmpty } from "class-validator";
 
 class CreateContractType {
    // @IsOptional() @IsNotEmpty() @IsString() Series: string;

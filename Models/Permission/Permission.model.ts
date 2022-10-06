@@ -1,7 +1,7 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class Perms extends Model {
-  
+
   public Series!: string;
   public RoleSeries!: string;
   public JsonData!: string;
@@ -14,38 +14,39 @@ class Perms extends Model {
   public updatedBy!: String;
 
   public static initialize(sequelize: Sequelize) {
-    
+
     this.init(
-      { ID:{
-        type: DataTypes.INTEGER,
-        unique:true,
-        autoIncrement: true,
-      },
-      Series: {
-        type: DataTypes.STRING,
-        primaryKey: true,
-      allowNull: false
-      }, 
-      RoleSeries: {
-        type: DataTypes.STRING,
-        primaryKey: true,
-      allowNull: false
-      },
-      JsonData:{
-        type: DataTypes.STRING,
-      allowNull: false
-      },
-        createdBy:{
+      {
+        ID: {
+          type: DataTypes.INTEGER,
+          unique: true,
+          autoIncrement: true,
+        },
+        Series: {
+          type: DataTypes.STRING,
+          primaryKey: true,
+          allowNull: false
+        },
+        RoleSeries: {
+          type: DataTypes.STRING,
+          primaryKey: true,
+          allowNull: false
+        },
+        JsonData: {
+          type: DataTypes.STRING,
+          allowNull: false
+        },
+        createdBy: {
           type: DataTypes.STRING
         },
-        updatedBy:{
+        updatedBy: {
           type: DataTypes.STRING
         }
-        
+
       },
       {
-        sequelize: sequelize, 
-         hasTrigger: true,
+        sequelize: sequelize,
+        hasTrigger: true,
         freezeTableName: true,
         name: {
           singular: "Permission",

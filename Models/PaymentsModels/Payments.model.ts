@@ -1,16 +1,16 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class Payments extends Model {
-public Series!: string; 
-public PostingDate!:Date;
-public Reference!: string; 
-public Purpose!: string; 
-public PayParty!: string;
-public ReceiveParty!: string;
-public Amount!:number;
-public Currency!: string; 
-public For!: string; 
-public Remarks!: string; 
+  public Series!: string;
+  public PostingDate!: Date;
+  public Reference!: string;
+  public Purpose!: string;
+  public PayParty!: string;
+  public ReceiveParty!: string;
+  public Amount!: number;
+  public Currency!: string;
+  public For!: string;
+  public Remarks!: string;
 
   // Auto-generated
   public id!: number;
@@ -23,52 +23,52 @@ public Remarks!: string;
 
     this.init(
       {
-        ID:{
+        ID: {
           type: DataTypes.INTEGER,
-          unique:true,
+          unique: true,
           autoIncrement: true,
-    
+
         },
         Series: {
           type: DataTypes.STRING,
           primaryKey: true,
-        allowNull: false
+          allowNull: false
         },
-        PostingDate:{
+        PostingDate: {
           type: DataTypes.DATEONLY,
-        allowNull: false
+          allowNull: false
         },
-        Reference:{
+        Reference: {
           type: DataTypes.STRING
         },
-        Purpose:{
+        Purpose: {
           type: DataTypes.STRING,
-             },
-        Amount:{
+        },
+        Amount: {
           type: DataTypes.DOUBLE
         },
-        Currency:{
+        Currency: {
           type: DataTypes.STRING,
-      
+
         },
-        PayParty:{
+        PayParty: {
           type: DataTypes.STRING,
-      
+
         },
-          ReceiveParty:{
+        ReceiveParty: {
           type: DataTypes.STRING,
-      
+
         },
-        For:{
+        For: {
           type: DataTypes.STRING
         },
-        Remarks:{
+        Remarks: {
           type: DataTypes.STRING
         },
-        createdBy:{
+        createdBy: {
           type: DataTypes.STRING
         },
-        updatedBy:{
+        updatedBy: {
           type: DataTypes.STRING
         }
       },

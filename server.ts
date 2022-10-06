@@ -44,6 +44,6 @@ const app = new App(
     new UsersController(),
     new AttachmentController(),
     new ReportsController()
- ], 8080);
+    ], 8080);
 
 app.listen();

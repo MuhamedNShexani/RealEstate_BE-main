@@ -283,7 +283,7 @@ class PartyController extends BaseController {
 
       }).catch((err) => {
         console.log(err);
-        
+
         if (err.name == "SequelizeUniqueConstraintError") {
           response.status(400).send({ message: " (FullName)  has already used . please try another name ." });
         }
@@ -306,7 +306,7 @@ class PartyController extends BaseController {
     next: express.NextFunction
   ) => {
     const PartyReq = request.params;
-    const { Party,CurrentUser } = request.db.models;
+    const { Party, CurrentUser } = request.db.models;
     let result;
     try {
       // const oldParty = await Party.findOne({
@@ -320,7 +320,7 @@ class PartyController extends BaseController {
       // });
       await CurrentUser.update(
         {
-         CurrentUser:request.userName
+          CurrentUser: request.userName
         },
         {
           where: {
@@ -345,17 +345,18 @@ class PartyController extends BaseController {
           })
         }
       }).catch((err: any) => {
-        if(err.name=="SequelizeForeignKeyConstraintError"){
+        if (err.name == "SequelizeForeignKeyConstraintError") {
           response.status(400).send({
-         message:
-          "Sorry You can't delete this because its reference to another page "
-       })
-       }
-       else {
-        response.status(400).send({
-          message:
-            err.name || "Some error occurred while deleting Party."
-        })}
+            message:
+              "Sorry You can't delete this because its reference to another page "
+          })
+        }
+        else {
+          response.status(400).send({
+            message:
+              err.name || "Some error occurred while deleting Party."
+          })
+        }
       });
       this.io
         .to(request.UserSeries)
@@ -363,7 +364,7 @@ class PartyController extends BaseController {
 
       next();
     } catch (error) {
-      
+
       response.status(400).send({
         message:
           error.message || "Some error occurred while Deleting the Party."

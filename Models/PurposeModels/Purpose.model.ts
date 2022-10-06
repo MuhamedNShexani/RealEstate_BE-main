@@ -1,12 +1,12 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class Purpose extends Model {
-public Series!: string; 
+  public Series!: string;
 
-public Purpose!: string; 
-public IsPayable!:boolean;
-public DefaultAmt!:number
-public DefaultCurrency!: string; 
+  public Purpose!: string;
+  public IsPayable!: boolean;
+  public DefaultAmt!: number
+  public DefaultCurrency!: string;
 
 
 
@@ -21,36 +21,36 @@ public DefaultCurrency!: string;
 
     this.init(
       {
-        ID:{
+        ID: {
           type: DataTypes.INTEGER,
-          unique:true,
+          unique: true,
           autoIncrement: true,
-    
+
         },
         Series: {
           type: DataTypes.STRING,
           primaryKey: true,
-        allowNull: false
+          allowNull: false
         },
-        Purpose:{
+        Purpose: {
           type: DataTypes.STRING,
-          unique:true,
-        allowNull: false
+          unique: true,
+          allowNull: false
         },
-        IsPayable:{
+        IsPayable: {
           type: DataTypes.BOOLEAN
         },
-        DefaultAmt:{
+        DefaultAmt: {
           type: DataTypes.DOUBLE
         },
-        DefaultCurrency:{
+        DefaultCurrency: {
           type: DataTypes.STRING,
-          
+
         },
-        createdBy:{
+        createdBy: {
           type: DataTypes.STRING
         },
-        updatedBy:{
+        updatedBy: {
           type: DataTypes.STRING
         }
       },

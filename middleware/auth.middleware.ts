@@ -8,7 +8,6 @@ import YouHaveBeenLogedOutTokenException from "../exceptions/YouHaveBeenLogedOut
 import { Sequelize } from "sequelize";
 import Territory from "../Models/TerritoryModels/Territory.model";
 import Branches from "../Models/BranchesModels/Branches.model";
-// import Account from "../Models/Account/Account.model";
 import ContractTemplates from "../Models/ContractTemplatesModels/ContractTemplates.model";
 import PrintKeys from "../Models/PrintKey/Printkey.model";
 import ContractType from "../Models/ContractTypeModels/ContractType.model";
@@ -31,7 +30,7 @@ import Lawyer from "../Models/LawyerModels/Lawyer.model";
 
 let dbConfig = {
   HOST: process.env.SERVER,
-  PORT:1433,
+  PORT: 1433,
   USER: process.env.USER,
   PASSWORD: process.env.PASSWORD,
   DB: process.env.DATABASE,
@@ -87,7 +86,6 @@ async function authMiddleware(
 
         const CurrentUser1 = verificationResponse.UserName;
         const UserSeries = verificationResponse.Series;
-        // console.log("Current:",UserSeries)
         let sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
           host: dbConfig.HOST,
           port: dbConfig.PORT,
@@ -169,19 +167,7 @@ async function authMiddleware(
             Users];
 
           models.forEach((model) => model.initialize(sequelize));
-          // const perms = await Permission.findOne({
-          //   where: { RoleSeries: user.dataValues.RoleID },
-          //   raw: true,
-          // });
-          // const AccountInfo = await Account.findOne({
-          //   where: {
-          //     Series: user.dataValues.Account,
-          //   },
-          //   raw: true,
-          // });
 
-          // user.permissions = perms ? perms.RoleSeries : [];
-          // request.accountInfo = AccountInfo;
           request.user = user;
           request.userName = CurrentUser1;
           request.Users = Users;

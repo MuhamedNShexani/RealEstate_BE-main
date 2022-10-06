@@ -1,13 +1,13 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class Party extends Model {
-public Series!: string; 
-public FullName!: string;
-public Phone!: string;
-public Cell!: string;
-public Address!: string;
-public Gender!: string;
-public Remarks!: string;
+  public Series!: string;
+  public FullName!: string;
+  public Phone!: string;
+  public Cell!: string;
+  public Address!: string;
+  public Gender!: string;
+  public Remarks!: string;
 
   // Auto-generated
   public id!: number;
@@ -24,7 +24,7 @@ public Remarks!: string;
           type: DataTypes.INTEGER,
           unique: true,
           autoIncrement: true,
-    
+
         },
         Series: {
           type: DataTypes.STRING,
@@ -51,10 +51,10 @@ public Remarks!: string;
         Remarks: {
           type: DataTypes.STRING
         },
-        createdBy:{
+        createdBy: {
           type: DataTypes.STRING
         },
-        updatedBy:{
+        updatedBy: {
           type: DataTypes.STRING
         }
       },

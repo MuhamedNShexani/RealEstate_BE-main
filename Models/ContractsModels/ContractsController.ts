@@ -126,11 +126,11 @@ class ContractsController extends BaseController {
     }
 
     console.log("User (action)  : get By Series [Contracts] By : {" + request.userName + "} , Date:" + Date());
-    ContractsResult.dataValues.Furnitures=ContractsResult.dataValues.Furnitures==null?[]:JSON.parse(ContractsResult.dataValues.Furnitures)        
-    ContractsResult.dataValues.ExtraPayment=ContractsResult.dataValues.ExtraPayment==null?[]:JSON.parse(ContractsResult.dataValues.ExtraPayment)    
-    ContractsResult.dataValues.PaidCurrency=ContractsResult.dataValues.PaidCurrency==null?'':ContractsResult.dataValues.PaidCurrency    
-    ContractsResult.dataValues.RentCurrency=ContractsResult.dataValues.RentCurrency==null?'':ContractsResult.dataValues.RentCurrency  
-    ContractsResult.dataValues.Attributes=ContractsResult.dataValues.Attributes==null?[]:JSON.parse(ContractsResult.dataValues.Attributes)    
+    ContractsResult.dataValues.Furnitures = ContractsResult.dataValues.Furnitures == null ? [] : JSON.parse(ContractsResult.dataValues.Furnitures)
+    ContractsResult.dataValues.ExtraPayment = ContractsResult.dataValues.ExtraPayment == null ? [] : JSON.parse(ContractsResult.dataValues.ExtraPayment)
+    ContractsResult.dataValues.PaidCurrency = ContractsResult.dataValues.PaidCurrency == null ? '' : ContractsResult.dataValues.PaidCurrency
+    ContractsResult.dataValues.RentCurrency = ContractsResult.dataValues.RentCurrency == null ? '' : ContractsResult.dataValues.RentCurrency
+    ContractsResult.dataValues.Attributes = ContractsResult.dataValues.Attributes == null ? [] : JSON.parse(ContractsResult.dataValues.Attributes)
     response.send(ContractsResult);
   };
 
@@ -188,14 +188,14 @@ class ContractsController extends BaseController {
     try {
       // if (ContractsUpdate.IsRent == ContractsUpdate.IsSale)
       //   response.status(400).send({ message: " the property of contract should be for Rent Or for Sale check one of this two value" })
-  
-        try {
-          // if(ContractsUpdate.PaidCurrency==null){
-          //   ContractsUpdate.PaidCurrency='[]'
-          //  }
-          //  if(ContractsUpdate.RentCurrency==null){
-          //   ContractsUpdate.RentCurrency='[]'
-          //  }
+
+      try {
+        // if(ContractsUpdate.PaidCurrency==null){
+        //   ContractsUpdate.PaidCurrency='[]'
+        //  }
+        //  if(ContractsUpdate.RentCurrency==null){
+        //   ContractsUpdate.RentCurrency='[]'
+        //  }
         let owner = await Property.findOne({ where: { Series: ContractsUpdate.Property } })
         if (ContractsUpdate.FirstParty == null) {
           ContractsUpdate.FirstParty = owner.dataValues.Party
@@ -207,33 +207,32 @@ class ContractsController extends BaseController {
 
       } catch (err) {
         console.log(err);
-        
+
         response.status(400).send({ message: err.name })
 
-      } 
-      let i:any
-      for(i in request.body.ExtraPayment)
-      {          
-        request.body.ExtraPayment[i].ContractDate=ContractsUpdate.ContractDate
+      }
+      let i: any
+      for (i in request.body.ExtraPayment) {
+        request.body.ExtraPayment[i].ContractDate = ContractsUpdate.ContractDate
         // request.body.ExtraPayment[i].ContractEnds=ContractsCreate.ContractEnds
       }
-      request.body.PaidCurrency=request.body.PaidCurrency==''?null:request.body.PaidCurrency    
-      request.body.RentFor=request.body.RentFor==''?null:request.body.RentFor    
-      request.body.RentCurrency=request.body.RentCurrency==''?null:request.body.RentCurrency    
-      request.body.PaidAmt=request.body.PaidAmt==''?null:request.body.PaidAmt    
-  
+      request.body.PaidCurrency = request.body.PaidCurrency == '' ? null : request.body.PaidCurrency
+      request.body.RentFor = request.body.RentFor == '' ? null : request.body.RentFor
+      request.body.RentCurrency = request.body.RentCurrency == '' ? null : request.body.RentCurrency
+      request.body.PaidAmt = request.body.PaidAmt == '' ? null : request.body.PaidAmt
+
       result = await Contracts.update(
         {
           ...ContractsUpdate,
-          PaidCurrency:request.body.PaidCurrency,
-          RentFor:request.body.RentFor,
-          RentCurrency:request.body.RentCurrency,
-          PaidAmt:request.body.PaidAmt,
-          
-          ExtraPayment:JSON.stringify(request.body.ExtraPayment),
+          PaidCurrency: request.body.PaidCurrency,
+          RentFor: request.body.RentFor,
+          RentCurrency: request.body.RentCurrency,
+          PaidAmt: request.body.PaidAmt,
+
+          ExtraPayment: JSON.stringify(request.body.ExtraPayment),
           Attributes: JSON.stringify(request.body.Attributes),
           Furnitures: JSON.stringify(request.body.Furnitures),
-          MethodOfPayment:1,
+          MethodOfPayment: 1,
           updatedBy: request.userName,
           updatedAt: new Date(),
         },
@@ -242,22 +241,23 @@ class ContractsController extends BaseController {
             Series: series,
           },
         }
-      ).then(async(data) => {
+      ).then(async (data) => {
 
         if (data[0] == 1) {
-            await Property.update(
-              {Available:false,
-                updatedBy: request.userName,
-                updatedAt: new Date(),
+          await Property.update(
+            {
+              Available: false,
+              updatedBy: request.userName,
+              updatedAt: new Date(),
+            },
+            {
+              where: {
+                Series: ContractsUpdate.Property,
               },
-              {
-                where: {
-                  Series: ContractsUpdate.Property,
-                },
-              }
-            )
-          
-          
+            }
+          )
+
+
           response.status(201).send("updated");
 
           console.log("User (action)  : Update [Contracts]  By : {" + request.userName + "} , Date:" + Date());
@@ -269,9 +269,9 @@ class ContractsController extends BaseController {
         } else {
           response.status(404).send(series + "  Not found");
         }
-      }).catch((err) => {       
+      }).catch((err) => {
         console.log(err);
-         
+
         if (err.index != undefined)
           response.status(400).send({ message: "error in forign key " + err.index + " || should be exist ." });
         else {
@@ -283,7 +283,7 @@ class ContractsController extends BaseController {
         }
       })
 
-    
+
     }
     catch (error) {
       next(new AddingRowException(error, "Contracts"));
@@ -297,12 +297,12 @@ class ContractsController extends BaseController {
     request: express.Request,
     response: express.Response,
     next: express.NextFunction
-  ) => {    
+  ) => {
     request.body.token = null;
     const ContractsCreate: CreateContracts = request.body;
     const { Contracts, Property } = request.db.models;
     let lastSeries;
-    
+
     try {
 
       let owner = await Property.findOne({ where: { Series: ContractsCreate.Property } })
@@ -312,7 +312,7 @@ class ContractsController extends BaseController {
       } else if (ContractsCreate.FirstParty != owner.dataValues.Party) {
         response.status(400).send({ message: "First Party must be owner" })
       }
-      if(ContractsCreate.HandoverDate<ContractsCreate.ContractStarts || ContractsCreate.HandoverDate>ContractsCreate.ContractEnds  ){
+      if (ContractsCreate.HandoverDate < ContractsCreate.ContractStarts || ContractsCreate.HandoverDate > ContractsCreate.ContractEnds) {
         response.status(400).send({ message: "Handover Date must Between ContractStarts and ContractEnds" })
       }
     } catch (err) {
@@ -321,97 +321,96 @@ class ContractsController extends BaseController {
 
     // if (ContractsCreate.IsRent == ContractsCreate.IsSale)
     //   response.status(400).send({ message: " the property of contract should be for Rent Or for Sale check one of this two value" })
- if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
+    if (ContractsCreate.FirstParty == ContractsCreate.SecondParty) {
       response.status(400).send({ message: "[First Party] and [Second party] must be different  " })
-}
-      await Contracts.findOne({
-        order: [["id", "DESC"]],
-      }).
-        then((data: any) => {
-          if (!data) {
-            lastSeries = 1;
-          } else {
-            lastSeries = +data.dataValues.Series.substring(4) + 1;
-          }
-        }).catch((err: any) => {
-          response.status(400).send({
-            message:
-              err.name || "Some error occurred while retrieving Contracts."
-          })
-        });
-      let result;
-      let i:any
-      try {
-        for(i in request.body.ExtraPayment)
-        {          
-          request.body.ExtraPayment[i].ContractSeries="CON-" + lastSeries
-          request.body.ExtraPayment[i].ContractDate=ContractsCreate.ContractDate
-          // request.body.ExtraPayment[i].ContractEnds=ContractsCreate.ContractEnds
+    }
+    await Contracts.findOne({
+      order: [["id", "DESC"]],
+    }).
+      then((data: any) => {
+        if (!data) {
+          lastSeries = 1;
+        } else {
+          lastSeries = +data.dataValues.Series.substring(4) + 1;
         }
+      }).catch((err: any) => {
+        response.status(400).send({
+          message:
+            err.name || "Some error occurred while retrieving Contracts."
+        })
+      });
+    let result;
+    let i: any
+    try {
+      for (i in request.body.ExtraPayment) {
+        request.body.ExtraPayment[i].ContractSeries = "CON-" + lastSeries
+        request.body.ExtraPayment[i].ContractDate = ContractsCreate.ContractDate
+        // request.body.ExtraPayment[i].ContractEnds=ContractsCreate.ContractEnds
+      }
 
-        request.body.PaidCurrency=request.body.PaidCurrency==''?null:request.body.PaidCurrency    
-        request.body.RentFor=request.body.RentFor==''?null:request.body.RentFor    
-        request.body.RentCurrency=request.body.RentCurrency==''?null:request.body.RentCurrency    
-        request.body.PaidAmt=request.body.PaidAmt==''?null:request.body.PaidAmt    
-    
-          
-        await Contracts.create({
-          ...ContractsCreate,
-          PaidCurrency:request.body.PaidCurrency,
-          RentFor:request.body.RentFor,
-          RentCurrency:request.body.RentCurrency,
-          PaidAmt:request.body.PaidAmt,
-          ExtraPayment:JSON.stringify(request.body.ExtraPayment),
-          Attributes:JSON.stringify(request.body.Attributes),
-          Furnitures: JSON.stringify(request.body.Furnitures),
-          Series: "CON-" + lastSeries,
-          MethodOfPayment:1,
-          createdBy: request.userName,
-          createdAt: new Date(),
-        }).then(async data => {
-          Contracts.Series = data.dataValues.Series;
-          // console.log(data.dataValues.SecondParty);
-          this.io
-            .to(request.UserSeries)
-            .emit("Add", { doctype: "Contracts", data: data });
+      request.body.PaidCurrency = request.body.PaidCurrency == '' ? null : request.body.PaidCurrency
+      request.body.RentFor = request.body.RentFor == '' ? null : request.body.RentFor
+      request.body.RentCurrency = request.body.RentCurrency == '' ? null : request.body.RentCurrency
+      request.body.PaidAmt = request.body.PaidAmt == '' ? null : request.body.PaidAmt
 
-          console.log("User (action)  : Create new [Contracts] By : {" + request.userName + "} , Date: " + Date());
-              await Property.update(
-            {
-              Available:false,
-              updatedBy: request.userName,
-              updatedAt: new Date(),
+
+      await Contracts.create({
+        ...ContractsCreate,
+        PaidCurrency: request.body.PaidCurrency,
+        RentFor: request.body.RentFor,
+        RentCurrency: request.body.RentCurrency,
+        PaidAmt: request.body.PaidAmt,
+        ExtraPayment: JSON.stringify(request.body.ExtraPayment),
+        Attributes: JSON.stringify(request.body.Attributes),
+        Furnitures: JSON.stringify(request.body.Furnitures),
+        Series: "CON-" + lastSeries,
+        MethodOfPayment: 1,
+        createdBy: request.userName,
+        createdAt: new Date(),
+      }).then(async data => {
+        Contracts.Series = data.dataValues.Series;
+        // console.log(data.dataValues.SecondParty);
+        this.io
+          .to(request.UserSeries)
+          .emit("Add", { doctype: "Contracts", data: data });
+
+        console.log("User (action)  : Create new [Contracts] By : {" + request.userName + "} , Date: " + Date());
+        await Property.update(
+          {
+            Available: false,
+            updatedBy: request.userName,
+            updatedAt: new Date(),
+          },
+          {
+            where: {
+              Series: data.dataValues.Property,
             },
-            {
-              where: {
-                Series: data.dataValues.Property,
-              },
-            }
-          )
-        
-          response.status(201).send(data)
-
-
-
-        }).catch((err) => {
-          console.log(err);
-          if (err.index != undefined)
-            response.status(400).send({ message: "error in forign key " + err.index + " || should be exist ." });
-          else {
-            if (err.name == "SequelizeUniqueConstraintError") {
-              response.status(400).send({ message: " [ContractsProperty] is unique   " });
-            } else
-              response.status(400).send({ message: err.name || "There is some Error in creating User" });
-
           }
-        }
         )
 
-      } catch (error) {
-        next(new AddingRowException(error, "Contracts"));
-        return;
+        response.status(201).send(data)
+
+
+
+      }).catch((err) => {
+        console.log(err);
+        if (err.index != undefined)
+          response.status(400).send({ message: "error in forign key " + err.index + " || should be exist ." });
+        else {
+          if (err.name == "SequelizeUniqueConstraintError") {
+            response.status(400).send({ message: " [ContractsProperty] is unique   " });
+          } else
+            response.status(400).send({ message: err.name || "There is some Error in creating User" });
+
+        }
       }
-    
+      )
+
+    } catch (error) {
+      next(new AddingRowException(error, "Contracts"));
+      return;
+    }
+
     next();
   };
   deleteContracts = async (
@@ -420,10 +419,10 @@ class ContractsController extends BaseController {
     next: express.NextFunction
   ) => {
     const ContractsReq = request.params.series;
-    const { Contracts,CurrentUser,Property } = request.db.models;
+    const { Contracts, CurrentUser, Property } = request.db.models;
     let result;
     try {
-      
+
       const oldContracts = await Contracts.findOne({
         where: { Series: ContractsReq },
         // attributes: ["Series", "ContractDate", "FirstParty", "SecondParty", "Property", "IsSale", "IsRent", "ContractStarts", "ContractEnds", "HandoverDate", "RequestedAmt", "PaidAmt", "PaidCurrency", "RentFor",
@@ -436,7 +435,7 @@ class ContractsController extends BaseController {
       });
       await CurrentUser.update(
         {
-         CurrentUser:request.userName
+          CurrentUser: request.userName
         },
         {
           where: {
@@ -450,19 +449,19 @@ class ContractsController extends BaseController {
           Series: ContractsReq, //this will be your id that you want to delete
         },
       }).then(async (num: number) => {
-          await Property.update(
-        {
-          Available:true,
-          updatedBy: request.userName,
-          updatedAt: new Date(),
-        },
-        {
-          where: {
-            Series: oldContracts.dataValues.Property,
+        await Property.update(
+          {
+            Available: true,
+            updatedBy: request.userName,
+            updatedAt: new Date(),
           },
-        }
-      )
-      
+          {
+            where: {
+              Series: oldContracts.dataValues.Property,
+            },
+          }
+        )
+
         if (num == 1) {
           console.log("User (action)  : delete one [Contracts]  By : {" + request.userName + "} , Date:" + Date());
           this.io
@@ -479,18 +478,19 @@ class ContractsController extends BaseController {
         }
       }).catch((err: any) => {
         console.log(err);
-        
-        if(err.name=="SequelizeForeignKeyConstraintError"){
+
+        if (err.name == "SequelizeForeignKeyConstraintError") {
           response.status(400).send({
-         message:
-          "Sorry You can't delete this because its reference to another page "
-       })
-       }
-       else {
-        response.status(400).send({
-          message:
-            err.name || "Some error occurred while deleting Contracts."
-        })}
+            message:
+              "Sorry You can't delete this because its reference to another page "
+          })
+        }
+        else {
+          response.status(400).send({
+            message:
+              err.name || "Some error occurred while deleting Contracts."
+          })
+        }
 
       });
 

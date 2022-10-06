@@ -277,8 +277,8 @@ class ContractTypeController extends BaseController {
         ContractType.Series = data.dataValues.Series;
         console.log("User (action)  : Create New [ContractType] By : {" + request.userName + "} , Date: " + Date());
         this.io
-        .to(request.UserSeries)
-        .emit("Add", { doctype: "ContractType", data: data });
+          .to(request.UserSeries)
+          .emit("Add", { doctype: "ContractType", data: data });
 
         response.status(201).send(data);
 
@@ -307,7 +307,7 @@ class ContractTypeController extends BaseController {
     next: express.NextFunction
   ) => {
     const ContractTypeReq = request.params;
-    const { ContractType,CurrentUser } = request.db.models;
+    const { ContractType, CurrentUser } = request.db.models;
     let result;
     try {
       // const oldContractType = await ContractType.findOne({
@@ -321,7 +321,7 @@ class ContractTypeController extends BaseController {
       // });
       await CurrentUser.update(
         {
-         CurrentUser:request.userName
+          CurrentUser: request.userName
         },
         {
           where: {

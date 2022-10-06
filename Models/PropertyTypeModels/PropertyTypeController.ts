@@ -285,7 +285,7 @@ class PropertyTypeController extends BaseController {
     next: express.NextFunction
   ) => {
     const PropertyTypeReq = request.params;
-    const { PropertyType,CurrentUser } = request.db.models;
+    const { PropertyType, CurrentUser } = request.db.models;
     let result;
     try {
       // const oldPropertyType = await PropertyType.findOne({
@@ -299,7 +299,7 @@ class PropertyTypeController extends BaseController {
       // });
       await CurrentUser.update(
         {
-         CurrentUser:request.userName
+          CurrentUser: request.userName
         },
         {
           where: {
@@ -324,17 +324,18 @@ class PropertyTypeController extends BaseController {
           });
         }
       }).catch((err: any) => {
-        if(err.name=="SequelizeForeignKeyConstraintError"){
+        if (err.name == "SequelizeForeignKeyConstraintError") {
           response.status(400).send({
-         message:
-          "Sorry You can't delete this because its reference to another page "
-       })
-       }
-       else {
-        response.status(400).send({
-          message:
-            err.name || "Some error occurred while deleting PropertyType."
-        })}
+            message:
+              "Sorry You can't delete this because its reference to another page "
+          })
+        }
+        else {
+          response.status(400).send({
+            message:
+              err.name || "Some error occurred while deleting PropertyType."
+          })
+        }
       })
       this.io
         .emit("Delete", { doctype: "PropertyType", data: PropertyTypeReq });

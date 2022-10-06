@@ -1,8 +1,8 @@
-import {  IsString, IsOptional, IsNotEmpty} from "class-validator";
+import { IsString, IsOptional, IsNotEmpty } from "class-validator";
 
 class CreatePropertyType {
   // @IsOptional() @IsNotEmpty() @IsString()Series: string; 
-  @IsString() TypeName: string; 
+  @IsString() TypeName: string;
 
 }
 

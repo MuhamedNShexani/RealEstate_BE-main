@@ -271,10 +271,10 @@ class ContractTemplatesController extends BaseController {
 
       // request.body.HTML=request.body.HTML.replaceAll("<", "&lt;");
       // request.body.HTML=request.body.HTML.replaceAll(">", "&gt;");
-      
+
       result = await ContractTemplates.create({
         ...ContractTemplatesCreate,
-        HTML:request.body.HTML,
+        HTML: request.body.HTML,
         Series: "CTEMP-" + lastSeries,
         createdBy: request.userName,
         createdAt: new Date(),
@@ -298,7 +298,7 @@ class ContractTemplatesController extends BaseController {
 
     } catch (error) {
       console.log(error);
-      
+
       next(new AddingRowException(error, "CreateContractTemplates"));
       return;
     }
@@ -312,7 +312,7 @@ class ContractTemplatesController extends BaseController {
     next: express.NextFunction
   ) => {
     const ContractTemplatesReq = request.params;
-    const { ContractTemplates,CurrentUser } = request.db.models;
+    const { ContractTemplates, CurrentUser } = request.db.models;
     let result;
     try {
       // const oldContractTemplates = await ContractTemplates.findOne({
@@ -326,7 +326,7 @@ class ContractTemplatesController extends BaseController {
       // });
       await CurrentUser.update(
         {
-         CurrentUser:request.userName
+          CurrentUser: request.userName
         },
         {
           where: {
@@ -342,7 +342,7 @@ class ContractTemplatesController extends BaseController {
         if (num == 1) {
           console.log("User (action)  : Delete one [ContractTemplates]  By : {" + request.userName + "} , Date:" + Date());
 
-           response.send({
+          response.send({
             message: "ContractTemplates was deleted successfully!"
           });
         } else {
@@ -350,7 +350,7 @@ class ContractTemplatesController extends BaseController {
             message: `Cannot delete ContractTemplates with Series=${ContractTemplatesReq.series}. Maybe ContractTemplates was not found!`
           });
         }
-      }).catch((err: any) => {        
+      }).catch((err: any) => {
         response.status(400).send({
           message:
             err.name || "Some error occurred while deleting ContractTemplates."
@@ -361,7 +361,7 @@ class ContractTemplatesController extends BaseController {
         .emit("Delete", { doctype: "ContractTemplate", data: ContractTemplatesReq });
       next();
 
-    } catch (error) {      
+    } catch (error) {
       response.status(400).send({
         message:
           error.message || "Some error occurred while Deleting the ContractTemplates."

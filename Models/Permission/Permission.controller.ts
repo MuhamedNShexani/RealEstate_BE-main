@@ -311,7 +311,7 @@ class PermsController extends BaseController {
     next: express.NextFunction
   ) => {
     const PermsReq = request.params;
-    const { Perms,CurrentUser } = request.db.models;
+    const { Perms, CurrentUser } = request.db.models;
     let result;
     try {
       // const oldPerms = await Perms.findOne({
@@ -325,7 +325,7 @@ class PermsController extends BaseController {
       // });
       await CurrentUser.update(
         {
-         CurrentUser:request.userName
+          CurrentUser: request.userName
         },
         {
           where: {

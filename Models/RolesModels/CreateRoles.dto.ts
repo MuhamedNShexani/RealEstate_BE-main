@@ -1,8 +1,8 @@
-import {  IsString, IsOptional,IsNotEmpty} from "class-validator";
+import { IsString, IsOptional, IsNotEmpty } from "class-validator";
 
 class CreateRoles {
-  @IsString()RoleName: string; 
- 
+  @IsString() RoleName: string;
+
 
 }
 

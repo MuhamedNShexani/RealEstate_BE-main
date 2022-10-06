@@ -1,11 +1,11 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class Branches extends Model {
-  
+
   public Series!: string;
   public BranchName!: string;
-  public  ParentBranch!: string;
-  public  isGroup!:boolean
+  public ParentBranch!: string;
+  public isGroup!: boolean
   // Auto-generated
   public id!: number;
   public createdAt!: Date;
@@ -14,36 +14,37 @@ class Branches extends Model {
   public updatedBy!: String;
 
   public static initialize(sequelize: Sequelize) {
-    
+
     this.init(
-      { ID:{
-        type: DataTypes.INTEGER,
-        unique:true,
-        autoIncrement: true,
-      },
+      {
+        ID: {
+          type: DataTypes.INTEGER,
+          unique: true,
+          autoIncrement: true,
+        },
         Series: {
           type: DataTypes.STRING,
           primaryKey: true,
-        allowNull: false
+          allowNull: false
         },
-        BranchName:{
+        BranchName: {
           type: DataTypes.STRING,
-          unique:true,
-        allowNull: false
+          unique: true,
+          allowNull: false
         },
         isGroup: {
           type: DataTypes.BOOLEAN
         },
-         ParentBranch:{
+        ParentBranch: {
           type: DataTypes.STRING
         },
-        createdBy:{
+        createdBy: {
           type: DataTypes.STRING
         },
-        updatedBy:{
+        updatedBy: {
           type: DataTypes.STRING
         }
-        
+
       },
       {
         sequelize: sequelize,

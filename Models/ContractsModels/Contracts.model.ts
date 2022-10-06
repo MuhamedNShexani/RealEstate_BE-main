@@ -1,34 +1,34 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class Contracts extends Model {
-public ContractDate!: Date;
-public FirstParty!: Date;
+  public ContractDate!: Date;
+  public FirstParty!: Date;
 
-public SecondParty!: string;
-public Series!: string;
-public ContractType!: string;
-public Property!: string;
-public Attributes!: string;
-public TypeOfTran!: boolean;
-public ContractStarts!: Date;
-public ContractEnds!: Date;
-public HandoverDate!: Date;
-public RequestedAmt!: number;
-public PaidAmt!: number;
-public PaidCurrency!: string
-public RentFor!: number
-public RentCurrency!: string
-public AdvanceAmt!: string
-public AdvanceCurrency!: string;
-public InsuranceAmt!:number;
-public InsuranceCurrency!: string
-public IsFurnished!: boolean
-public Furnitures!: string
-public Remarks!: string
-public ExtraPayment!: string
-public PropertyType!: string
-public Lawyer!: string
-public MethodOfPayment!:number;
+  public SecondParty!: string;
+  public Series!: string;
+  public ContractType!: string;
+  public Property!: string;
+  public Attributes!: string;
+  public TypeOfTran!: boolean;
+  public ContractStarts!: Date;
+  public ContractEnds!: Date;
+  public HandoverDate!: Date;
+  public RequestedAmt!: number;
+  public PaidAmt!: number;
+  public PaidCurrency!: string
+  public RentFor!: number
+  public RentCurrency!: string
+  public AdvanceAmt!: string
+  public AdvanceCurrency!: string;
+  public InsuranceAmt!: number;
+  public InsuranceCurrency!: string
+  public IsFurnished!: boolean
+  public Furnitures!: string
+  public Remarks!: string
+  public ExtraPayment!: string
+  public PropertyType!: string
+  public Lawyer!: string
+  public MethodOfPayment!: number;
 
 
 
@@ -40,14 +40,14 @@ public MethodOfPayment!:number;
   public updatedBy!: String;
 
   public static initialize(sequelize: Sequelize) {
-    
+
     this.init(
       {
         ID: {
           type: DataTypes.INTEGER,
           unique: true,
           autoIncrement: true,
-    
+
         },
         Series: {
           type: DataTypes.STRING,
@@ -63,25 +63,25 @@ public MethodOfPayment!:number;
         Attributes: {
           type: DataTypes.STRING
         },
-         ContractType: {
+        ContractType: {
           type: DataTypes.STRING
         },
         SecondParty: {
           type: DataTypes.STRING,
-        
+
         },
         Property: {
           type: DataTypes.STRING,
-        
-        },  
-         PropertyType: {
+
+        },
+        PropertyType: {
           type: DataTypes.STRING,
-        
-        }, 
+
+        },
         MethodOfPayment: {
           type: DataTypes.INTEGER,
-        
-        },  
+
+        },
         TypeOfTran: {
           type: DataTypes.BOOLEAN
         },
@@ -102,28 +102,28 @@ public MethodOfPayment!:number;
         },
         PaidCurrency: {
           type: DataTypes.STRING,
-       
+
         },
         RentFor: {
           type: DataTypes.INTEGER
         },
         RentCurrency: {
           type: DataTypes.STRING,
-        
+
         },
         AdvanceAmt: {
           type: DataTypes.DOUBLE
         },
         AdvanceCurrency: {
           type: DataTypes.STRING,
-         
+
         },
         InsuranceAmt: {
           type: DataTypes.DOUBLE
         },
         InsuranceCurrency: {
           type: DataTypes.STRING,
-        
+
         },
         IsFurnished: {
           type: DataTypes.BOOLEAN
@@ -139,18 +139,19 @@ public MethodOfPayment!:number;
         },
         Lawyer: {
           type: DataTypes.STRING
-        }  ,
-         createdBy:{
+        },
+        createdBy: {
           type: DataTypes.STRING
         },
-        updatedBy:{
+        updatedBy: {
           type: DataTypes.STRING
-        
-        }},
+
+        }
+      },
       {
         sequelize: sequelize,
         freezeTableName: true,
-        hasTrigger:true,
+        hasTrigger: true,
         name: {
           singular: "Contracts",
           plural: "Contracts",

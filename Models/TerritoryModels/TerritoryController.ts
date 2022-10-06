@@ -309,7 +309,7 @@ class TerritoryController extends BaseController {
     next: express.NextFunction
   ) => {
     const TerritoryReq = request.params;
-    const { Territory ,CurrentUser} = request.db.models;
+    const { Territory, CurrentUser } = request.db.models;
     let result;
     try {
       // const oldTerritory = await Territory.findOne({
@@ -323,7 +323,7 @@ class TerritoryController extends BaseController {
       // });
       await CurrentUser.update(
         {
-         CurrentUser:request.userName
+          CurrentUser: request.userName
         },
         {
           where: {
@@ -351,17 +351,18 @@ class TerritoryController extends BaseController {
           });
         }
       }).catch((err: any) => {
-        if(err.name=="SequelizeForeignKeyConstraintError"){
+        if (err.name == "SequelizeForeignKeyConstraintError") {
           response.status(400).send({
-         message:
-          "Sorry You can't delete this because its reference to another page "
-       })
-       }
-       else {
-        response.status(400).send({
-          message:
-            err.name || "Some error occurred while deleting Territory."
-        })}
+            message:
+              "Sorry You can't delete this because its reference to another page "
+          })
+        }
+        else {
+          response.status(400).send({
+            message:
+              err.name || "Some error occurred while deleting Territory."
+          })
+        }
       })
       next();
 

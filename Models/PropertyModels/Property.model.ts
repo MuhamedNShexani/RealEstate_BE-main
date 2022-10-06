@@ -1,18 +1,18 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class Property extends Model {
-public Series!: string; 
-public  Territory!: string; 
-public  Purpose!: string; 
-public  Location!: string; 
-public  PropertyType!: string; 
-public  Attributes!: string; 
-public  IsFurnished!: boolean; 
-public  Available!: boolean; 
-public  Furnitures!: string; 
-public  Party!: string; 
-public  RequestedAmt!: number; 
-public  Currency!: string; 
+  public Series!: string;
+  public Territory!: string;
+  public Purpose!: string;
+  public Location!: string;
+  public PropertyType!: string;
+  public Attributes!: string;
+  public IsFurnished!: boolean;
+  public Available!: boolean;
+  public Furnitures!: string;
+  public Party!: string;
+  public RequestedAmt!: number;
+  public Currency!: string;
 
 
   // Auto-generated
@@ -26,30 +26,30 @@ public  Currency!: string;
 
     this.init(
       {
-        ID:{
+        ID: {
           type: DataTypes.INTEGER,
-          unique:true,
+          unique: true,
           autoIncrement: true,
-    
+
         },
         Series: {
           type: DataTypes.STRING,
           primaryKey: true,
-        allowNull: false
+          allowNull: false
         },
-        Territory:{
-        type: DataTypes.STRING,
-        },
-        Purpose:{
+        Territory: {
           type: DataTypes.STRING,
-            },
-        Location:{
+        },
+        Purpose: {
+          type: DataTypes.STRING,
+        },
+        Location: {
           type: DataTypes.STRING
         },
-        PropertyType:{
+        PropertyType: {
           type: DataTypes.STRING
         },
-        Attributes:{
+        Attributes: {
           type: DataTypes.STRING
         },
         IsFurnished: {
@@ -58,31 +58,31 @@ public  Currency!: string;
         Available: {
           type: DataTypes.BOOLEAN
         },
-        Furnitures:{
+        Furnitures: {
           type: DataTypes.STRING
         },
-        Party:{
+        Party: {
           type: DataTypes.STRING,
-        
+
         },
-        RequestedAmt:{
+        RequestedAmt: {
           type: DataTypes.DOUBLE
         },
-        Currency:{
+        Currency: {
           type: DataTypes.STRING,
-        
+
         },
-        createdBy:{
+        createdBy: {
           type: DataTypes.STRING
         },
-        updatedBy:{
+        updatedBy: {
           type: DataTypes.STRING
         },
-        Longitude:{
+        Longitude: {
           type: DataTypes.INTEGER
         }
         ,
-        Latitude:{
+        Latitude: {
           type: DataTypes.INTEGER
         }
       },

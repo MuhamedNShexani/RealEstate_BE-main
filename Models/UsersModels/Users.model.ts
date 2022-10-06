@@ -2,16 +2,16 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 import * as bcrypt from "bcrypt"
 class Users extends Model {
   public Series!: string;
-public  FullName!: string;
-public  UserName!: string;
-public  Password!: string;
-public  Language!: string;
-public  RoleID!: string;
-public FromDate!: Date;
-public ToDate!: Date;
-public  Branch!: string;
-public  Disabled!: boolean;
-public  DefaultCurrency!: string;
+  public FullName!: string;
+  public UserName!: string;
+  public Password!: string;
+  public Language!: string;
+  public RoleID!: string;
+  public FromDate!: Date;
+  public ToDate!: Date;
+  public Branch!: string;
+  public Disabled!: boolean;
+  public DefaultCurrency!: string;
   // Auto-generated
   public id!: number;
   public createdAt!: Date;
@@ -20,13 +20,13 @@ public  DefaultCurrency!: string;
   public updatedBy!: String;
 
   public static initialize(sequelize: Sequelize) {
-    
+
     this.init(
       {
         ID: {
           type: DataTypes.INTEGER,
           unique: true,
-    
+
         }, Series: {
           type: DataTypes.STRING,
           primaryKey: true,
@@ -46,11 +46,11 @@ public  DefaultCurrency!: string;
           type: DataTypes.STRING,
           allowNull: false,
           validate: {
-            len: { 
-               args: [7, 42],
-               msg: "The password length should be between 7 and 42 characters."
+            len: {
+              args: [7, 42],
+              msg: "The password length should be between 7 and 42 characters."
             }
-         },
+          },
         },
         Language: {
           type: DataTypes.STRING
@@ -66,21 +66,21 @@ public  DefaultCurrency!: string;
         },
         Branch: {
           type: DataTypes.STRING,
-    
+
         },
         Disabled: {
           type: DataTypes.BOOLEAN
         },
         DefaultCurrency: {
           type: DataTypes.STRING,
-    
+
         },
         createdBy: { type: DataTypes.STRING, allowNull: true },
         createdAt: { type: DataTypes.DATE, allowNull: true },
         updatedAt: { type: DataTypes.DATE, allowNull: true },
         updatedBy: { type: DataTypes.STRING, allowNull: true },
-       },
-        {
+      },
+      {
         hooks: {
           beforeCreate: async (user) => {
             if (user.Password) {
@@ -90,32 +90,32 @@ public  DefaultCurrency!: string;
           },
           beforeUpdate: async (user) => {
             if (user.Password) {
-              const salt = bcrypt.genSaltSync(10,'a');
+              const salt = bcrypt.genSaltSync(10, 'a');
               user.Password = bcrypt.hashSync(user.Password, salt);
 
             }
           }
         }, sequelize: sequelize,
         hasTrigger: true,
-              freezeTableName: true,
-              name: {
-                singular: "Users",
-                plural: "Users",
-              }
-        
+        freezeTableName: true,
+        name: {
+          singular: "Users",
+          plural: "Users",
+        }
+
         // instanceMethods: {
         //   validPassword: (Password) => {
         //     return bcrypt.compareSync(Password, this.Password);
         //   }
         // }
       });
-      // Users.prototype.validPassword = async (Password, hash) => {
-      //   return await bcrypt.compareSync(Password, hash);
-      // }
-      // {
-      //   
-      // }
-    
+    // Users.prototype.validPassword = async (Password, hash) => {
+    //   return await bcrypt.compareSync(Password, hash);
+    // }
+    // {
+    //   
+    // }
+
   }
 
 }

@@ -1,8 +1,8 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 class ContractType extends Model {
-public Series!: string;
-public ContractType!: string;
+  public Series!: string;
+  public ContractType!: string;
 
   // Auto-generated
   public id!: number;
@@ -15,24 +15,24 @@ public ContractType!: string;
 
     this.init(
       {
-        ID:{
+        ID: {
           type: DataTypes.INTEGER,
-          unique:true,
+          unique: true,
           autoIncrement: true,
         },
         Series: {
           type: DataTypes.STRING,
           primaryKey: true,
-        allowNull: false
+          allowNull: false
         },
-        ContractType:{
+        ContractType: {
           type: DataTypes.STRING,
-          unique:true,
-        allowNull: false
-        },   createdBy:{
+          unique: true,
+          allowNull: false
+        }, createdBy: {
           type: DataTypes.STRING
         },
-        updatedBy:{
+        updatedBy: {
           type: DataTypes.STRING
         }
       },
@@ -43,7 +43,7 @@ public ContractType!: string;
         name: {
           singular: "ContractType",
           plural: "ContractType",
-          
+
         },
       }
     );
