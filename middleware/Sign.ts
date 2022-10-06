@@ -16,11 +16,11 @@ async function SignMiddlware(
 
     try {
       let dbConfig={  
-        HOST: "localhost",
+        HOST: process.env.SERVER,
         PORT: 1433,
-        USER: "MuhamedShexani",
-        PASSWORD: "123456788mmnM",
-        DB: "RealEstate",
+        USER: process.env.USER,
+        PASSWORD: process.env.PASSWORD,
+        DB: process.env.DATABASE,
         dialect: "mssql",
         pool: {
           max: 5,
