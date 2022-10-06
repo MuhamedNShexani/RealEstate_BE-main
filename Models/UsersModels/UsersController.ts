@@ -241,7 +241,7 @@ UsersResult.dataValues.Password=null;
           } else {
             secret = process.env.ACCESS_TOKEN_SECRET;
           }
-          const accessToken = jwt.sign(user, secret, { expiresIn: "100h" })
+          const accessToken = jwt.sign(user, secret, { expiresIn: "720h" })
           console.log("User (action)  : Update [Users] " + Date());
 
           response.status(201).send("updated");
@@ -318,7 +318,7 @@ UsersResult.dataValues.Password=null;
         } else {
           secret = process.env.ACCESS_TOKEN_SECRET;
         }
-        const accessToken = jwt.sign(user, secret, { expiresIn: "168h" })
+        const accessToken = jwt.sign(user, secret, { expiresIn: "720h" })
 
         Users.Series = data.dataValues.Series;
         console.log("User (action)  : Create New [Users] " + Date());
@@ -466,7 +466,7 @@ UsersResult.dataValues.Password=null;
               secret = process.env.ACCESS_TOKEN_SECRET;
             }
             let user = { UserName: data.dataValues.UserName,defaultCurrency:data.dataValues.DefaultCurrency, Series: data.dataValues.Series, RoleID: data.dataValues.RoleID }
-            const accessToken = jwt.sign(user, secret, { expiresIn: "168h" });
+            const accessToken = jwt.sign(user, secret, { expiresIn: "720h" });
             // console.log(user);
 
             let Pusher = require('pusher');
