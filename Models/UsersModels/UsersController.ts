@@ -467,16 +467,7 @@ UsersResult.dataValues.Password=null;
             }
             let user = { UserName: data.dataValues.UserName,defaultCurrency:data.dataValues.DefaultCurrency, Series: data.dataValues.Series, RoleID: data.dataValues.RoleID }
             const accessToken = jwt.sign(user, secret, { expiresIn: "720h" });
-            // console.log(user);
-          //   {
-          //     "Series": "PER-5",
-          //     "RoleSeries": "ROL-1",
-          //     "JsonData": "[{\"DocTypeID\":\"DT-1\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"Branches\"},{\"DocTypeID\":\"DT-2\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"Contracts\"},{\"DocTypeID\":\"DT-3\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"ContractTemplates\"},{\"DocTypeID\":\"DT-4\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"ContractType\"},{\"DocTypeID\":\"DT-5\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"Party\"},{\"DocTypeID\":\"DT-6\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"Payments\"},{\"DocTypeID\":\"DT-7\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"Permission\"},{\"DocTypeID\":\"DT-8\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"Property\"},{\"DocTypeID\":\"DT-9\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"PropertyAttr\"},{\"DocTypeID\":\"DT-10\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"PropertyType\"},{\"DocTypeID\":\"DT-11\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"Purpose\"},{\"DocTypeID\":\"DT-12\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"Roles\"},{\"DocTypeID\":\"DT-13\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"Territory\"},{\"DocTypeID\":\"DT-14\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"Users\"},{\"DocTypeID\":\"DT-15\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"Currency\"},{\"DocTypeID\":\"DT-10\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"Amend\":true,\"Cancel\":true,\"DocTypeName\":\"PropertyType\"},{\"DocTypeID\":\"DT-16\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"DocTypeName\":\"CurrencyExchange\"},{\"DocTypeID\":\"DT-17\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"DocTypeName\":\"Attachment\"},{\"DocTypeID\":\"DT-18\",\"Read\":true,\"Write\":true,\"Create\":true,\"Delete\":true,\"DocTypeName\":\"Lawyer\"}]",
-          //     "createdBy": "MM",
-          //     "updatedBy": "Ahmed11",
-          //     "createdAt": "2022-09-05T16:16:08.122Z",
-          //     "updatedAt": "2022-10-06T14:44:47.449Z"
-          // },
+       
             let Pusher = require('pusher');
             let pusher = new Pusher({
               appId: "1464760",
@@ -506,8 +497,6 @@ if(user.UserName=='ADMIN'){
 }else{
   PermsResult = JSON.parse(PermsResult.JsonData);
 }
-            // console.log(PermsResult[0]);
-            // response.send(PermsResult.JsonData)
             let A: any = [];
             PermsResult.map((i) => {
               if (i.Create) {
