@@ -187,7 +187,7 @@ class AttachmentController extends BaseController {
       const CLIENT_SECRET = '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';
       const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-      const REFRESH_TOKEN = '1//04fXU3FnDo4muCgYIARAAGAQSNgF-L9IrgGdD6c_1gjcpIG9ShcfVjF8dBFvNXKIgNqGBs45hoHmWunuBc5s9CKe-6gxtFu8icA'
+      const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
   
     const oauth2Client = new google.auth.OAuth2(
       CLIENT_ID,
@@ -220,6 +220,7 @@ class AttachmentController extends BaseController {
     response: express.Response,
     next: express.NextFunction
   ) => {
+    console.log("Hello from Create");
 
     try {
 
@@ -245,7 +246,7 @@ else{
       const CLIENT_SECRET = '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';
       const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-      const REFRESH_TOKEN = '1//04Ha8ocIklDBuCgYIARAAGAQSNgF-L9IrXfYYkPR63YwuE5iO_21UD3gKLl4aCV34tGhzszrsVpbWMS33YEXT5n1MYsJk8yOHqQ'
+      const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
       const oauth2Client = new google.auth.OAuth2(
         CLIENT_ID,
         CLIENT_SECRET,
@@ -368,6 +369,7 @@ else{
   ) => {
 
     try {
+      console.log("Hello from Download");
 
       const { Attachment } = request.db.models;
 
@@ -378,7 +380,7 @@ else{
     const CLIENT_SECRET = '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';
     const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-    const REFRESH_TOKEN = '1//04_bQFY-mL6lPCgYIARAAGAQSNgF-L9IrJa8A7Y5ONsQZxV_sGAxmINoP03jQq_AjqQGX54akqNG8-maP1C6T7RH1LjzueVGajg'
+    const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
 
       const oauth2Client = new google.auth.OAuth2(
         CLIENT_ID,
@@ -439,6 +441,7 @@ else{
   ) => {
 
     try {
+      console.log("Hello from View Attachment");
 
       const { Attachment } = request.db.models;
 
@@ -448,7 +451,7 @@ else{
       const CLIENT_SECRET = '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';
       const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-      const REFRESH_TOKEN = '1//04_bQFY-mL6lPCgYIARAAGAQSNgF-L9IrJa8A7Y5ONsQZxV_sGAxmINoP03jQq_AjqQGX54akqNG8-maP1C6T7RH1LjzueVGajg'
+      const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
   
       const oauth2Client = new google.auth.OAuth2(
         CLIENT_ID,
@@ -502,13 +505,14 @@ else{
     let fileid = request.params.id
     let refSeries = request.params.refSeries
 
+console.log("Hello from Delete");
 
 
     const CLIENT_ID = '261832109476-1a09damq8qcni47i3h39eurmdssqt1o9.apps.googleusercontent.com';
       const CLIENT_SECRET = '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';
       const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 
-      const REFRESH_TOKEN = '1//04_bQFY-mL6lPCgYIARAAGAQSNgF-L9IrJa8A7Y5ONsQZxV_sGAxmINoP03jQq_AjqQGX54akqNG8-maP1C6T7RH1LjzueVGajg'
+      const REFRESH_TOKEN = '1//04Jesxv4QPY8BCgYIARAAGAQSNgF-L9Ir-EW_rexcSZs2W7nBj816uHoS5EAv_dKaYFHtcXoyoJQa3z6OAf1Wjum_IWTjXKmRjQ'
   
     const oauth2Client = new google.auth.OAuth2(
       CLIENT_ID,

@@ -167,7 +167,7 @@ class PropertyController extends BaseController {
 
     try {
       const res = await Property.findAll({
-        where: { Available:true },
+        // where: { Available:true },
         // attributes: ["Series", "Territory", "Purpose", "Location", "Attributes", "ISFurnished", "Furnitures", "Party", "RequestedAmt", "Currency"],
         offset: parseInt(page) * parseInt(pageSize),
         order: [["id", "DESC"]],

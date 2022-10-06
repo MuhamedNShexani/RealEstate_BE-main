@@ -10,6 +10,7 @@ class ReportsController extends BaseController {
   public read5 = "/Reports/Tenants";
   public read6 = "/Reports/collectionInsurance";
   public read7 = "/Reports/Lawyer_Report";
+  public read8 = "/Reports/Payment_Report";
 
   public io;
   public router = express.Router();
@@ -110,6 +111,20 @@ class ReportsController extends BaseController {
     this.router.get(this.read7, authMiddleware, async (req, res, next) => {
       try {
         this.getLawyerReport(req, res, next)
+
+      } catch (error) {
+        console.log(error);
+        next(
+          new HttpException(
+            error.originalError.status || 400,
+            error.originalError.message
+          )
+        );
+      }
+    });
+    this.router.get(this.read8, authMiddleware, async (req, res, next) => {
+      try {
+        this.getPaymentReport(req, res, next)
 
       } catch (error) {
         console.log(error);
@@ -454,6 +469,26 @@ if(result1.dataValues.CurrencyName !=undefined){
       {
        products = await pool.request().query("lawyerReport");
       }
+      response.status(200).send(products.recordsets[0])
+
+    } catch (error) {
+      console.log(error)
+      response.send(error)
+    }
+  }
+  getPaymentReport = async (
+    request: express.Request,
+    response: express.Response,
+    next: express.NextFunction
+  ) => {
+    var config = require('../../db/config.ts');
+    const sql = require('mssql');
+
+    try {
+      let pool = await sql.connect(config);
+      let products
+      products = await pool.request().query("PaymentReport");
+
       response.status(200).send(products.recordsets[0])
 
     } catch (error) {

@@ -124,9 +124,12 @@ class ContractsController extends BaseController {
       next(new NotFoundException(series, "Contracts"));
       return;
     }
+
     console.log("User (action)  : get By Series [Contracts] By : {" + request.userName + "} , Date:" + Date());
     ContractsResult.dataValues.Furnitures=ContractsResult.dataValues.Furnitures==null?[]:JSON.parse(ContractsResult.dataValues.Furnitures)        
     ContractsResult.dataValues.ExtraPayment=ContractsResult.dataValues.ExtraPayment==null?[]:JSON.parse(ContractsResult.dataValues.ExtraPayment)    
+    ContractsResult.dataValues.PaidCurrency=ContractsResult.dataValues.PaidCurrency==null?'':ContractsResult.dataValues.PaidCurrency    
+    ContractsResult.dataValues.RentCurrency=ContractsResult.dataValues.RentCurrency==null?'':ContractsResult.dataValues.RentCurrency  
     ContractsResult.dataValues.Attributes=ContractsResult.dataValues.Attributes==null?[]:JSON.parse(ContractsResult.dataValues.Attributes)    
     response.send(ContractsResult);
   };
@@ -187,6 +190,12 @@ class ContractsController extends BaseController {
       //   response.status(400).send({ message: " the property of contract should be for Rent Or for Sale check one of this two value" })
   
         try {
+          // if(ContractsUpdate.PaidCurrency==null){
+          //   ContractsUpdate.PaidCurrency='[]'
+          //  }
+          //  if(ContractsUpdate.RentCurrency==null){
+          //   ContractsUpdate.RentCurrency='[]'
+          //  }
         let owner = await Property.findOne({ where: { Series: ContractsUpdate.Property } })
         if (ContractsUpdate.FirstParty == null) {
           ContractsUpdate.FirstParty = owner.dataValues.Party
@@ -197,6 +206,8 @@ class ContractsController extends BaseController {
         }
 
       } catch (err) {
+        console.log(err);
+        
         response.status(400).send({ message: err.name })
 
       } 
@@ -206,13 +217,23 @@ class ContractsController extends BaseController {
         request.body.ExtraPayment[i].ContractDate=ContractsUpdate.ContractDate
         // request.body.ExtraPayment[i].ContractEnds=ContractsCreate.ContractEnds
       }
+      request.body.PaidCurrency=request.body.PaidCurrency==''?null:request.body.PaidCurrency    
+      request.body.RentFor=request.body.RentFor==''?null:request.body.RentFor    
+      request.body.RentCurrency=request.body.RentCurrency==''?null:request.body.RentCurrency    
+      request.body.PaidAmt=request.body.PaidAmt==''?null:request.body.PaidAmt    
+  
       result = await Contracts.update(
         {
           ...ContractsUpdate,
+          PaidCurrency:request.body.PaidCurrency,
+          RentFor:request.body.RentFor,
+          RentCurrency:request.body.RentCurrency,
+          PaidAmt:request.body.PaidAmt,
           
           ExtraPayment:JSON.stringify(request.body.ExtraPayment),
           Attributes: JSON.stringify(request.body.Attributes),
           Furnitures: JSON.stringify(request.body.Furnitures),
+          MethodOfPayment:1,
           updatedBy: request.userName,
           updatedAt: new Date(),
         },
@@ -248,7 +269,9 @@ class ContractsController extends BaseController {
         } else {
           response.status(404).send(series + "  Not found");
         }
-      }).catch((err) => {        
+      }).catch((err) => {       
+        console.log(err);
+         
         if (err.index != undefined)
           response.status(400).send({ message: "error in forign key " + err.index + " || should be exist ." });
         else {
@@ -281,8 +304,7 @@ class ContractsController extends BaseController {
     let lastSeries;
     
     try {
-     console.log(request.body);
-     
+
       let owner = await Property.findOne({ where: { Series: ContractsCreate.Property } })
       if (ContractsCreate.FirstParty == null) {
         ContractsCreate.FirstParty = owner.dataValues.Party
@@ -327,9 +349,18 @@ class ContractsController extends BaseController {
           // request.body.ExtraPayment[i].ContractEnds=ContractsCreate.ContractEnds
         }
 
-
+        request.body.PaidCurrency=request.body.PaidCurrency==''?null:request.body.PaidCurrency    
+        request.body.RentFor=request.body.RentFor==''?null:request.body.RentFor    
+        request.body.RentCurrency=request.body.RentCurrency==''?null:request.body.RentCurrency    
+        request.body.PaidAmt=request.body.PaidAmt==''?null:request.body.PaidAmt    
+    
+          
         await Contracts.create({
           ...ContractsCreate,
+          PaidCurrency:request.body.PaidCurrency,
+          RentFor:request.body.RentFor,
+          RentCurrency:request.body.RentCurrency,
+          PaidAmt:request.body.PaidAmt,
           ExtraPayment:JSON.stringify(request.body.ExtraPayment),
           Attributes:JSON.stringify(request.body.Attributes),
           Furnitures: JSON.stringify(request.body.Furnitures),

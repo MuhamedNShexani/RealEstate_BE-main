@@ -16,7 +16,7 @@ public HandoverDate!: Date;
 public RequestedAmt!: number;
 public PaidAmt!: number;
 public PaidCurrency!: string
-public RentFor!: string
+public RentFor!: number
 public RentCurrency!: string
 public AdvanceAmt!: string
 public AdvanceCurrency!: string;
@@ -105,7 +105,7 @@ public MethodOfPayment!:number;
        
         },
         RentFor: {
-          type: DataTypes.STRING
+          type: DataTypes.INTEGER
         },
         RentCurrency: {
           type: DataTypes.STRING,
